@@ -26,6 +26,8 @@
       padding: 15px;
       box-shadow: 0px 8px 25px rgba(0,0,0,0.5);
       max-width: 90vw;
+      position: relative;
+      display: inline-block;
     }
     #gameImage {
       max-height: 70vh;
@@ -35,12 +37,19 @@
       box-shadow: 0px 5px 15px rgba(0,0,0,0.6);
       margin-bottom: 15px;
     }
+    #overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none; /* clicks go through */
+    }
     #message { font-size: 1.5em; margin: 15px; min-height: 2em; }
     #controls { margin-top: 10px; }
     button {
       padding: 10px 25px; font-size: 1em; border: none; border-radius: 8px;
       background-color: #2e7d32; color: #fff; cursor: pointer; transition: 0.2s;
       box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+      margin: 0 5px;
     }
     button:hover { background-color: #388e3c; transform: scale(1.05); }
     #score { margin-top: 15px; font-size: 1.3em; color: #d4f7c5; }
@@ -51,134 +60,134 @@
   <p>Click where you think the snake is hiding...</p>
   <div id="gameContainer">
     <img id="gameImage" src="" alt="Find the snake">
+    <canvas id="overlay"></canvas>
     <div id="message"></div>
     <div id="controls">
+      <button id="backBtn" style="display:none;">⬅️ Back</button>
       <button id="nextBtn" style="display:none;">Next Snake ➡️</button>
     </div>
     <div id="score"></div>
   </div>
-<div id="gameContainer" style="position:relative; display:inline-block;">
-  <img id="gameImage" src="" alt="Find the snake">
-  <canvas id="overlay"></canvas>
-</div>
 
   <script>
   const img = document.getElementById("gameImage");
-const message = document.getElementById("message");
-const nextBtn = document.getElementById("nextBtn");
-const scoreBox = document.getElementById("score");
-const canvas = document.getElementById("overlay");
-const ctx = canvas.getContext("2d");
+  const message = document.getElementById("message");
+  const nextBtn = document.getElementById("nextBtn");
+  const backBtn = document.getElementById("backBtn");
+  const scoreBox = document.getElementById("score");
+  const canvas = document.getElementById("overlay");
+  const ctx = canvas.getContext("2d");
 
-// Example with mixed hotspots
-const rounds = [
-  { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 } },
-  { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 } },
-  { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 } },
-  { src: "snake4.jpg", hotspot: { type: "rect", x1: 243, y1: 109, x2: 294, y2: 204 } },
-  { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 } },
-  { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 } }
-];
+  // Example with mixed hotspots
+  const rounds = [
+    { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 } },
+    { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 } },
+    { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 } },
+    { src: "snake4.jpg", hotspot: { type: "rect", x1: 243, y1: 109, x2: 294, y2: 204 } },
+    { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 } },
+    { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 } }
+  ];
 
-let currentRound = 0;
-let score = 0;
+  let currentRound = 0;
+  let score = 0;
 
-// --- New helper functions ---
-function resizeCanvas() {
-  canvas.width = img.clientWidth;
-  canvas.height = img.clientHeight;
-  canvas.style.position = "absolute";
-  canvas.style.left = "0";
-  canvas.style.top = "0";
-  canvas.style.pointerEvents = "none"; // so clicks go to image
-}
-
-function drawHotspot(hotspot) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 3;
-
-  const scaleX = img.clientWidth / img.naturalWidth;
-  const scaleY = img.clientHeight / img.naturalHeight;
-
-  if (hotspot.type === "circle") {
-    ctx.beginPath();
-    ctx.arc(hotspot.x * scaleX, hotspot.y * scaleY, hotspot.radius * scaleX, 0, 2 * Math.PI);
-    ctx.stroke();
-  } else if (hotspot.type === "rect") {
-    const x1 = Math.min(hotspot.x1, hotspot.x2) * scaleX;
-    const y1 = Math.min(hotspot.y1, hotspot.y2) * scaleY;
-    const w = Math.abs(hotspot.x2 - hotspot.x1) * scaleX;
-    const h = Math.abs(hotspot.y2 - hotspot.y1) * scaleY;
-    ctx.strokeRect(x1, y1, w, h);
-  }
-}
-// -----------------------------
-
-function loadRound() {
-  img.src = rounds[currentRound].src;
-  message.textContent = "";
-  nextBtn.style.display = "none";
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear old drawings
-}
-
-// Ensure canvas resizes once image loads
-img.onload = () => resizeCanvas();
-
-img.addEventListener("click", function(event) {
-  const rect = img.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  const scaleX = img.naturalWidth / img.width;
-  const scaleY = img.naturalHeight / img.height;
-
-  const clickX = x * scaleX;
-  const clickY = y * scaleY;
-
-  const hotspot = rounds[currentRound].hotspot;
-  let correct = false;
-
-  if (hotspot.type === "circle") {
-    const dx = clickX - hotspot.x;
-    const dy = clickY - hotspot.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    correct = distance <= hotspot.radius;
-  } else if (hotspot.type === "rect") {
-    correct =
-      clickX >= Math.min(hotspot.x1, hotspot.x2) &&
-      clickX <= Math.max(hotspot.x1, hotspot.x2) &&
-      clickY >= Math.min(hotspot.y1, hotspot.y2) &&
-      clickY <= Math.max(hotspot.y1, hotspot.y2);
+  function resizeCanvas() {
+    canvas.width = img.clientWidth;
+    canvas.height = img.clientHeight;
   }
 
-  if (correct) {
-    message.textContent = "✅ Correct! You found the snake!";
-    message.style.color = "#76ff03";
-    score++;
-    drawHotspot(hotspot); // <<< NEW: draw red circle/rect
-    nextBtn.style.display = "inline-block";
-  } else {
-    message.textContent = "❌ Nope, try again!";
-    message.style.color = "#ff5252";
-  }
-});
+  function drawHotspot(hotspot) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 3;
 
-nextBtn.addEventListener("click", function() {
-  currentRound++;
-  if (currentRound < rounds.length) {
-    loadRound();
-  } else {
-    img.style.display = "none";
-    canvas.style.display = "none";
-    message.textContent = "🎉 Game Over!";
-    scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
+    const scaleX = img.clientWidth / img.naturalWidth;
+    const scaleY = img.clientHeight / img.naturalHeight;
+
+    if (hotspot.type === "circle") {
+      ctx.beginPath();
+      ctx.arc(hotspot.x * scaleX, hotspot.y * scaleY, hotspot.radius * scaleX, 0, 2 * Math.PI);
+      ctx.stroke();
+    } else if (hotspot.type === "rect") {
+      const x1 = Math.min(hotspot.x1, hotspot.x2) * scaleX;
+      const y1 = Math.min(hotspot.y1, hotspot.y2) * scaleY;
+      const w = Math.abs(hotspot.x2 - hotspot.x1) * scaleX;
+      const h = Math.abs(hotspot.y2 - hotspot.y1) * scaleY;
+      ctx.strokeRect(x1, y1, w, h);
+    }
+  }
+
+  function loadRound() {
+    img.src = rounds[currentRound].src;
+    message.textContent = "";
     nextBtn.style.display = "none";
+    backBtn.style.display = currentRound > 0 ? "inline-block" : "none";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
-});
 
-// Start first round
-loadRound();
+  img.onload = () => resizeCanvas();
 
+  img.addEventListener("click", function(event) {
+    const rect = img.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const scaleX = img.naturalWidth / img.width;
+    const scaleY = img.naturalHeight / img.height;
+
+    const clickX = x * scaleX;
+    const clickY = y * scaleY;
+
+    const hotspot = rounds[currentRound].hotspot;
+    let correct = false;
+
+    if (hotspot.type === "circle") {
+      const dx = clickX - hotspot.x;
+      const dy = clickY - hotspot.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      correct = distance <= hotspot.radius;
+    } else if (hotspot.type === "rect") {
+      correct =
+        clickX >= Math.min(hotspot.x1, hotspot.x2) &&
+        clickX <= Math.max(hotspot.x1, hotspot.x2) &&
+        clickY >= Math.min(hotspot.y1, hotspot.y2) &&
+        clickY <= Math.max(hotspot.y1, hotspot.y2);
+    }
+
+    if (correct) {
+      message.textContent = "✅ Correct! You found the snake!";
+      message.style.color = "#76ff03";
+      score++;
+      drawHotspot(hotspot);
+      nextBtn.style.display = "inline-block";
+    } else {
+      message.textContent = "❌ Nope, try again!";
+      message.style.color = "#ff5252";
+    }
+  });
+
+  nextBtn.addEventListener("click", function() {
+    currentRound++;
+    if (currentRound < rounds.length) {
+      loadRound();
+    } else {
+      img.style.display = "none";
+      canvas.style.display = "none";
+      message.textContent = "🎉 Game Over!";
+      scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
+      nextBtn.style.display = "none";
+      backBtn.style.display = "none";
+    }
+  });
+
+  backBtn.addEventListener("click", function() {
+    if (currentRound > 0) {
+      currentRound--;
+      loadRound();
+    }
+  });
+
+  // Start first round
+  loadRound();
   </script>
 </body>
 </html>
