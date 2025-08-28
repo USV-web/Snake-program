@@ -76,131 +76,144 @@
   </div>
 
  <script>
-  const img = document.getElementById("gameImage");
-  const message = document.getElementById("message");
-  const nextBtn = document.getElementById("nextBtn");
-  const backBtn = document.getElementById("backBtn");
-  const scoreBox = document.getElementById("score");
-  const canvas = document.getElementById("overlay");
-  const ctx = canvas.getContext("2d");
+ const img = document.getElementById("gameImage");
+const message = document.getElementById("message");
+const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
+const scoreBox = document.getElementById("score");
+const canvas = document.getElementById("overlay");
+const ctx = canvas.getContext("2d");
 
-  // Snake rounds with hotspots
-  const rounds = [
-    { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 } },
-    { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 } },
-    { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 } },
-    { src: "snake4.jpg", hotspot: { type: "rect", x1: 243, y1: 109, x2: 294, y2: 204 } },
-    { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 } },
-    { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 } }
-  ];
+// Snake rounds with hotspots
+const rounds = [
+  { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 }, solved: false },
+  { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 }, solved: false },
+  { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 }, solved: false },
+  { src: "snake4.jpg", hotspot: { type: "rect", x1: 243, y1: 109, x2: 294, y2: 204 }, solved: false },
+  { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 }, solved: false },
+  { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false }
+];
 
-  let currentRound = 0;
-  let score = 0;
-  let foundThisRound = false; // ✅ prevents multiple scoring
+let currentRound = 0;
+let score = 0;
 
-  function resizeCanvas() {
-    canvas.width = img.clientWidth;
-    canvas.height = img.clientHeight;
+function resizeCanvas() {
+  canvas.width = img.clientWidth;
+  canvas.height = img.clientHeight;
+}
+
+function drawHotspot(hotspot) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 3;
+
+  const scaleX = img.clientWidth / img.naturalWidth;
+  const scaleY = img.clientHeight / img.naturalHeight;
+
+  if (hotspot.type === "circle") {
+    ctx.beginPath();
+    ctx.arc(hotspot.x * scaleX, hotspot.y * scaleY, hotspot.radius * scaleX, 0, 2 * Math.PI);
+    ctx.stroke();
+  } else if (hotspot.type === "rect") {
+    const x1 = Math.min(hotspot.x1, hotspot.x2) * scaleX;
+    const y1 = Math.min(hotspot.y1, hotspot.y2) * scaleY;
+    const w = Math.abs(hotspot.x2 - hotspot.x1) * scaleX;
+    const h = Math.abs(hotspot.y2 - hotspot.y1) * scaleY;
+    ctx.strokeRect(x1, y1, w, h);
+  }
+}
+
+function loadRound() {
+  img.src = rounds[currentRound].src;
+  message.textContent = "";
+  nextBtn.style.display = "none";
+  backBtn.style.display = currentRound > 0 ? "inline-block" : "none";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // If already solved, redraw hotspot & show correct message
+  if (rounds[currentRound].solved) {
+    drawHotspot(rounds[currentRound].hotspot);
+    message.textContent = "✅ Already solved!";
+    message.style.color = "#76ff03";
+    nextBtn.style.display = "inline-block";
+  }
+}
+
+img.onload = () => resizeCanvas();
+
+img.addEventListener("click", function(event) {
+  if (rounds[currentRound].solved) return; // Don’t rescore solved rounds
+
+  const rect = img.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const scaleX = img.naturalWidth / img.width;
+  const scaleY = img.naturalHeight / img.height;
+
+  const clickX = x * scaleX;
+  const clickY = y * scaleY;
+
+  const hotspot = rounds[currentRound].hotspot;
+  let correct = false;
+
+  if (hotspot.type === "circle") {
+    const dx = clickX - hotspot.x;
+    const dy = clickY - hotspot.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    correct = distance <= hotspot.radius;
+  } else if (hotspot.type === "rect") {
+    correct =
+      clickX >= Math.min(hotspot.x1, hotspot.x2) &&
+      clickX <= Math.max(hotspot.x1, hotspot.x2) &&
+      clickY >= Math.min(hotspot.y1, hotspot.y2) &&
+      clickY <= Math.max(hotspot.y1, hotspot.y2);
   }
 
-  function drawHotspot(hotspot) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 3;
-
-    const scaleX = img.clientWidth / img.naturalWidth;
-    const scaleY = img.clientHeight / img.naturalHeight;
-
-    if (hotspot.type === "circle") {
-      ctx.beginPath();
-      ctx.arc(hotspot.x * scaleX, hotspot.y * scaleY, hotspot.radius * scaleX, 0, 2 * Math.PI);
-      ctx.stroke();
-    } else if (hotspot.type === "rect") {
-      const x1 = Math.min(hotspot.x1, hotspot.x2) * scaleX;
-      const y1 = Math.min(hotspot.y1, hotspot.y2) * scaleY;
-      const w = Math.abs(hotspot.x2 - hotspot.x1) * scaleX;
-      const h = Math.abs(hotspot.y2 - hotspot.y1) * scaleY;
-      ctx.strokeRect(x1, y1, w, h);
-    }
+  if (correct) {
+    message.textContent = "✅ Correct! You found the snake!";
+    message.style.color = "#76ff03";
+    score++;
+    rounds[currentRound].solved = true;
+    scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+    drawHotspot(hotspot);
+    nextBtn.style.display = "inline-block";
+  } else {
+    message.textContent = "❌ Nope, try again!";
+    message.style.color = "#ff5252";
   }
+});
 
-  function loadRound() {
-    img.src = rounds[currentRound].src;
-    message.textContent = "";
+nextBtn.addEventListener("click", function() {
+  currentRound++;
+  if (currentRound < rounds.length) {
+    loadRound();
+  } else {
+    img.style.display = "none";
+    canvas.style.display = "none";
+    message.textContent = "🎉 Game Over!";
+    scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
     nextBtn.style.display = "none";
-    backBtn.style.display = currentRound > 0 ? "inline-block" : "none";
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    foundThisRound = false; // reset flag
+    backBtn.style.display = "none";
   }
+});
 
-  img.onload = () => resizeCanvas();
-
-  img.addEventListener("click", function(event) {
-    const rect = img.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const scaleX = img.naturalWidth / img.width;
-    const scaleY = img.naturalHeight / img.height;
-
-    const clickX = x * scaleX;
-    const clickY = y * scaleY;
-
-    const hotspot = rounds[currentRound].hotspot;
-    let correct = false;
-
-    if (hotspot.type === "circle") {
-      const dx = clickX - hotspot.x;
-      const dy = clickY - hotspot.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      correct = distance <= hotspot.radius;
-    } else if (hotspot.type === "rect") {
-      correct =
-        clickX >= Math.min(hotspot.x1, hotspot.x2) &&
-        clickX <= Math.max(hotspot.x1, hotspot.x2) &&
-        clickY >= Math.min(hotspot.y1, hotspot.y2) &&
-        clickY <= Math.max(hotspot.y1, hotspot.y2);
+backBtn.addEventListener("click", function() {
+  if (currentRound > 0) {
+    // ✅ If solved, undo the score before going back
+    if (rounds[currentRound].solved) {
+      score--;
+      rounds[currentRound].solved = false;
+      scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
     }
+    currentRound--;
+    loadRound();
+  }
+});
 
-    if (correct) {
-      if (!foundThisRound) { // ✅ only first time per round
-        score++;
-        foundThisRound = true;
-        scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
-      }
-      message.textContent = "✅ Correct! You found the snake!";
-      message.style.color = "#76ff03";
-      drawHotspot(hotspot);
-      nextBtn.style.display = "inline-block";
-    } else {
-      message.textContent = "❌ Nope, try again!";
-      message.style.color = "#ff5252";
-    }
-  });
+// Start first round
+loadRound();
+scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
 
-  nextBtn.addEventListener("click", function() {
-    currentRound++;
-    if (currentRound < rounds.length) {
-      loadRound();
-    } else {
-      img.style.display = "none";
-      canvas.style.display = "none";
-      message.textContent = "🎉 Game Over!";
-      scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
-      nextBtn.style.display = "none";
-      backBtn.style.display = "none";
-    }
-  });
-
-  backBtn.addEventListener("click", function() {
-    if (currentRound > 0) {
-      currentRound--;
-      loadRound();
-    }
-  });
-
-  // Start first round
-  loadRound();
-  scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
 </script>
 
 </body>
