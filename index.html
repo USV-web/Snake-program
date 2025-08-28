@@ -17,20 +17,8 @@
       align-items: center;
       justify-content: center;
     }
-
-    h1 {
-      margin-top: 10px;
-      font-size: 2.5em;
-      color: #d4f7c5;
-      text-shadow: 2px 2px 4px #000;
-    }
-
-    p {
-      font-size: 1.2em;
-      color: #e3f2d0;
-      margin-bottom: 10px;
-    }
-
+    h1 { margin-top: 10px; font-size: 2.5em; color: #d4f7c5; text-shadow: 2px 2px 4px #000; }
+    p { font-size: 1.2em; color: #e3f2d0; margin-bottom: 10px; }
     #gameContainer {
       background: rgba(255, 255, 255, 0.08);
       border: 3px solid #2e7d32;
@@ -39,7 +27,6 @@
       box-shadow: 0px 8px 25px rgba(0,0,0,0.5);
       max-width: 90vw;
     }
-
     #gameImage {
       max-height: 70vh;
       width: auto;
@@ -48,39 +35,15 @@
       box-shadow: 0px 5px 15px rgba(0,0,0,0.6);
       margin-bottom: 15px;
     }
-
-    #message {
-      font-size: 1.5em;
-      margin: 15px;
-      min-height: 2em;
-    }
-
-    #controls {
-      margin-top: 10px;
-    }
-
+    #message { font-size: 1.5em; margin: 15px; min-height: 2em; }
+    #controls { margin-top: 10px; }
     button {
-      padding: 10px 25px;
-      font-size: 1em;
-      border: none;
-      border-radius: 8px;
-      background-color: #2e7d32;
-      color: #fff;
-      cursor: pointer;
-      transition: 0.2s;
+      padding: 10px 25px; font-size: 1em; border: none; border-radius: 8px;
+      background-color: #2e7d32; color: #fff; cursor: pointer; transition: 0.2s;
       box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
     }
-
-    button:hover {
-      background-color: #388e3c;
-      transform: scale(1.05);
-    }
-
-    #score {
-      margin-top: 15px;
-      font-size: 1.3em;
-      color: #d4f7c5;
-    }
+    button:hover { background-color: #388e3c; transform: scale(1.05); }
+    #score { margin-top: 15px; font-size: 1.3em; color: #d4f7c5; }
   </style>
 </head>
 <body>
@@ -101,15 +64,15 @@
     const nextBtn = document.getElementById("nextBtn");
     const scoreBox = document.getElementById("score");
 
-    // 6 snake images with example hotspots
-    const rounds = [
-      { src: "snake1.jpg", hotspot: {x: 300, y: 220, radius: 50} },
-      { src: "snake2.jpg", hotspot: {x: 200, y: 400, radius: 40} },
-      { src: "snake3.jpg", hotspot: {x: 500, y: 300, radius: 60} },
-      { src: "snake4.jpg", hotspot: {x: 250, y: 350, radius: 45} },
-      { src: "snake5.jpg", hotspot: {x: 320, y: 280, radius: 50} },
-      { src: "snake6.jpg", hotspot: {x: 150, y: 420, radius: 40} }
-    ];
+    // Example with mixed hotspots
+   const rounds = [
+  { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 } },
+  { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 } },
+  { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 } },
+  { src: "snake4.jpg", hotspot: { type: "rect", x1: 307, y1: 170, x2: 253, y2: 116 } },
+  { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 } },
+  { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 } }
+];
 
     let currentRound = 0;
     let score = 0;
@@ -131,11 +94,20 @@
       const clickY = y * scaleY;
 
       const hotspot = rounds[currentRound].hotspot;
-      const dx = clickX - hotspot.x;
-      const dy = clickY - hotspot.y;
-      const distance = Math.sqrt(dx*dx + dy*dy);
+      let correct = false;
 
-      if (distance <= hotspot.radius) {
+      if (hotspot.type === "circle") {
+        const dx = clickX - hotspot.x;
+        const dy = clickY - hotspot.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        correct = distance <= hotspot.radius;
+      } else if (hotspot.type === "rect") {
+        correct =
+          clickX >= hotspot.x1 && clickX <= hotspot.x2 &&
+          clickY >= hotspot.y1 && clickY <= hotspot.y2;
+      }
+
+      if (correct) {
         message.textContent = "✅ Correct! You found the snake!";
         message.style.color = "#76ff03";
         score++;
