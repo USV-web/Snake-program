@@ -6,21 +6,43 @@
   <style>
     body { text-align: center; font-family: Arial, sans-serif; }
     #gameImage { max-width: 90vw; height: auto; cursor: crosshair; }
-    #message { font-size: 1.5em; margin-top: 20px; }
+    #message { font-size: 1.5em; margin: 20px; }
+    #controls { margin-top: 20px; }
+    button { padding: 10px 20px; font-size: 1em; }
   </style>
 </head>
 <body>
   <h1>Find the Snake! 🐍</h1>
   <p>Click where you think the snake is hiding.</p>
-  <img id="gameImage" src="snake1.jpg" alt="Find the snake">
+  <img id="gameImage" src="" alt="Find the snake">
   <div id="message"></div>
+  <div id="controls">
+    <button id="nextBtn" style="display:none;">Next Snake ➡️</button>
+  </div>
+  <div id="score"></div>
 
   <script>
     const img = document.getElementById("gameImage");
     const message = document.getElementById("message");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreBox = document.getElementById("score");
 
-    // Example hotspot coordinates (x, y in pixels relative to image)
-    const hotspot = { x: 300, y: 220, radius: 50 };
+    // List of images with hotspots (x, y, radius)
+    const rounds = [
+      { src: "snake1.jpg", hotspot: {x: 300, y: 220, radius: 50} },
+      { src: "snake2.jpg", hotspot: {x: 150, y: 400, radius: 40} },
+      { src: "snake3.jpg", hotspot: {x: 500, y: 300, radius: 60} }
+      // 👉 add more snakes here
+    ];
+
+    let currentRound = 0;
+    let score = 0;
+
+    function loadRound() {
+      img.src = rounds[currentRound].src;
+      message.textContent = "";
+      nextBtn.style.display = "none";
+    }
 
     img.addEventListener("click", function(event) {
       const rect = img.getBoundingClientRect();
@@ -29,10 +51,10 @@
       const scaleX = img.naturalWidth / img.width;
       const scaleY = img.naturalHeight / img.height;
 
-      // Convert to original image coordinates
       const clickX = x * scaleX;
       const clickY = y * scaleY;
 
+      const hotspot = rounds[currentRound].hotspot;
       const dx = clickX - hotspot.x;
       const dy = clickY - hotspot.y;
       const distance = Math.sqrt(dx*dx + dy*dy);
@@ -40,11 +62,28 @@
       if (distance <= hotspot.radius) {
         message.textContent = "✅ Correct! You found the snake!";
         message.style.color = "green";
+        score++;
+        nextBtn.style.display = "inline-block";
       } else {
         message.textContent = "❌ Nope, try again!";
         message.style.color = "red";
       }
     });
+
+    nextBtn.addEventListener("click", function() {
+      currentRound++;
+      if (currentRound < rounds.length) {
+        loadRound();
+      } else {
+        img.style.display = "none";
+        message.textContent = "🎉 Game Over!";
+        scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
+        nextBtn.style.display = "none";
+      }
+    });
+
+    // Start first round
+    loadRound();
   </script>
 </body>
 </html>
