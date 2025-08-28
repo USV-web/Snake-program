@@ -69,7 +69,7 @@
     <div id="score"></div>
   </div>
 
-  <script>
+ <script>
   const img = document.getElementById("gameImage");
   const message = document.getElementById("message");
   const nextBtn = document.getElementById("nextBtn");
@@ -78,7 +78,7 @@
   const canvas = document.getElementById("overlay");
   const ctx = canvas.getContext("2d");
 
-  // Example with mixed hotspots
+  // Snake rounds with hotspots
   const rounds = [
     { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 } },
     { src: "snake2.jpg", hotspot: { type: "circle", x: 765, y: 483, radius: 102 } },
@@ -90,6 +90,7 @@
 
   let currentRound = 0;
   let score = 0;
+  let foundThisRound = false; // ✅ prevents multiple scoring
 
   function resizeCanvas() {
     canvas.width = img.clientWidth;
@@ -123,6 +124,7 @@
     nextBtn.style.display = "none";
     backBtn.style.display = currentRound > 0 ? "inline-block" : "none";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    foundThisRound = false; // reset flag
   }
 
   img.onload = () => resizeCanvas();
@@ -154,9 +156,13 @@
     }
 
     if (correct) {
+      if (!foundThisRound) { // ✅ only first time per round
+        score++;
+        foundThisRound = true;
+        scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+      }
       message.textContent = "✅ Correct! You found the snake!";
       message.style.color = "#76ff03";
-      score++;
       drawHotspot(hotspot);
       nextBtn.style.display = "inline-block";
     } else {
@@ -188,6 +194,8 @@
 
   // Start first round
   loadRound();
-  </script>
+  scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+</script>
+
 </body>
 </html>
