@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find the Snake</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    #gameImage { max-width: 90vw; height: auto; cursor: crosshair; }
+    #message { font-size: 1.5em; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Find the Snake! 🐍</h1>
+  <p>Click where you think the snake is hiding.</p>
+  <img id="gameImage" src="snake1.jpg" alt="Find the snake">
+  <div id="message"></div>
+
+  <script>
+    const img = document.getElementById("gameImage");
+    const message = document.getElementById("message");
+
+    // Example hotspot coordinates (x, y in pixels relative to image)
+    const hotspot = { x: 300, y: 220, radius: 50 };
+
+    img.addEventListener("click", function(event) {
+      const rect = img.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const scaleX = img.naturalWidth / img.width;
+      const scaleY = img.naturalHeight / img.height;
+
+      // Convert to original image coordinates
+      const clickX = x * scaleX;
+      const clickY = y * scaleY;
+
+      const dx = clickX - hotspot.x;
+      const dy = clickY - hotspot.y;
+      const distance = Math.sqrt(dx*dx + dy*dy);
+
+      if (distance <= hotspot.radius) {
+        message.textContent = "✅ Correct! You found the snake!";
+        message.style.color = "green";
+      } else {
+        message.textContent = "❌ Nope, try again!";
+        message.style.color = "red";
+      }
+    });
+  </script>
+</body>
+</html>
