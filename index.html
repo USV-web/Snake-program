@@ -3,23 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <title>Find the Snake</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; }
-    #gameImage { max-width: 90vw; height: auto; cursor: crosshair; }
-    #message { font-size: 1.5em; margin: 20px; }
-    #controls { margin-top: 20px; }
-    button { padding: 10px 20px; font-size: 1em; }
+    body {
+      margin: 0;
+      font-family: 'Roboto Slab', serif;
+      text-align: center;
+      background: linear-gradient(135deg, #0b3d0b, #1e5631, #145214);
+      color: #f0f5e4;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      margin-top: 10px;
+      font-size: 2.5em;
+      color: #d4f7c5;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #e3f2d0;
+      margin-bottom: 10px;
+    }
+
+    #gameContainer {
+      background: rgba(255, 255, 255, 0.08);
+      border: 3px solid #2e7d32;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0px 8px 25px rgba(0,0,0,0.5);
+      max-width: 90vw;
+    }
+
+    #gameImage {
+      max-height: 70vh;
+      width: auto;
+      cursor: crosshair;
+      border-radius: 10px;
+      box-shadow: 0px 5px 15px rgba(0,0,0,0.6);
+      margin-bottom: 15px;
+    }
+
+    #message {
+      font-size: 1.5em;
+      margin: 15px;
+      min-height: 2em;
+    }
+
+    #controls {
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 25px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #2e7d32;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+    }
+
+    button:hover {
+      background-color: #388e3c;
+      transform: scale(1.05);
+    }
+
+    #score {
+      margin-top: 15px;
+      font-size: 1.3em;
+      color: #d4f7c5;
+    }
   </style>
 </head>
 <body>
-  <h1>Find the Snake! 🐍</h1>
-  <p>Click where you think the snake is hiding.</p>
-  <img id="gameImage" src="" alt="Find the snake">
-  <div id="message"></div>
-  <div id="controls">
-    <button id="nextBtn" style="display:none;">Next Snake ➡️</button>
+  <h1>🐍 Find the Snake!</h1>
+  <p>Click where you think the snake is hiding...</p>
+  <div id="gameContainer">
+    <img id="gameImage" src="" alt="Find the snake">
+    <div id="message"></div>
+    <div id="controls">
+      <button id="nextBtn" style="display:none;">Next Snake ➡️</button>
+    </div>
+    <div id="score"></div>
   </div>
-  <div id="score"></div>
 
   <script>
     const img = document.getElementById("gameImage");
@@ -27,12 +101,14 @@
     const nextBtn = document.getElementById("nextBtn");
     const scoreBox = document.getElementById("score");
 
-    // List of images with hotspots (x, y, radius)
+    // 6 snake images with example hotspots
     const rounds = [
       { src: "snake1.jpg", hotspot: {x: 300, y: 220, radius: 50} },
-      { src: "snake2.jpg", hotspot: {x: 150, y: 400, radius: 40} },
-      { src: "snake3.jpg", hotspot: {x: 500, y: 300, radius: 60} }
-      // 👉 add more snakes here
+      { src: "snake2.jpg", hotspot: {x: 200, y: 400, radius: 40} },
+      { src: "snake3.jpg", hotspot: {x: 500, y: 300, radius: 60} },
+      { src: "snake4.jpg", hotspot: {x: 250, y: 350, radius: 45} },
+      { src: "snake5.jpg", hotspot: {x: 320, y: 280, radius: 50} },
+      { src: "snake6.jpg", hotspot: {x: 150, y: 420, radius: 40} }
     ];
 
     let currentRound = 0;
@@ -61,12 +137,12 @@
 
       if (distance <= hotspot.radius) {
         message.textContent = "✅ Correct! You found the snake!";
-        message.style.color = "green";
+        message.style.color = "#76ff03";
         score++;
         nextBtn.style.display = "inline-block";
       } else {
         message.textContent = "❌ Nope, try again!";
-        message.style.color = "red";
+        message.style.color = "#ff5252";
       }
     });
 
