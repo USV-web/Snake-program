@@ -253,49 +253,6 @@ function endGame(){
   document.getElementById("finalMessage").textContent=`Score: ${score}/10 - ${finalMessage}`;
   document.getElementById("gameOverScreen").style.display="flex";
 }
-    if(!dataSubmitted){
-    dataSubmitted=true;
-    const timeTaken=Math.floor((new Date()-startTime)/1000);
-    fetch(`https://script.google.com/macros/s/AKfycbxKfEnCgKuX7_5H4k4Wh5Nzp4Xf5-_Wy6i8w9r8tf6Ur6ZLFIoOD9sm2YbxxOvhnl0/exec?email=${encodeURIComponent(playerEmail)}&score=${score}&timeTaken=${timeTaken}`);
-  }
-
-  if(score===rounds.length) launchBalloons();
-}
-
-// --- Play Again ---
-playAgainBtn.addEventListener("click", ()=>{
-  score=0; currentRound=0;
-  rounds.forEach(r=>r.solved=false);
-  scoreBox.textContent=`Score: ${score}/${rounds.length}`;
-  img.style.display="block"; canvas.style.display="block";
-  gameScreen.style.display="block";
-  document.getElementById("gameOverScreen").style.display="none";
-  loadRound();
-});
-
-// --- Balloons ---
-let balloons=[];
-function launchBalloons(){
-  balloonCanvas.width=window.innerWidth;
-  balloonCanvas.height=window.innerHeight;
-  balloons=[];
-  for(let i=0;i<30;i++){
-    balloons.push({x:Math.random()*balloonCanvas.width, y:balloonCanvas.height+Math.random()*500, r:20+Math.random()*30, c:`hsl(${Math.random()*360},70%,60%)`, s:1+Math.random()*2});
-  }
-  balloonCanvas.style.display="block";
-  requestAnimationFrame(updateBalloons);
-}
-function updateBalloons(){
-  bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
-  for(let b of balloons){
-    b.y-=b.s;
-    bctx.beginPath();
-    bctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-    bctx.fillStyle=b.c;
-    bctx.fill();
-  }
-  requestAnimationFrame(updateBalloons);
-}
 </script>
 </body>
 </html>
