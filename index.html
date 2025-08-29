@@ -16,6 +16,7 @@
       padding-top: 70px;
       color: white;
       text-align: center;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -53,6 +54,17 @@
       top: 0;
       left: 0;
       pointer-events: none;
+    }
+
+    #balloonCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1000;
+      display: none;
     }
 
     #message {
@@ -109,6 +121,9 @@
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
 
+  <!-- 🎈 Balloon Animation Canvas -->
+  <canvas id="balloonCanvas"></canvas>
+
 <script>
 const img = document.getElementById("gameImage");
 const message = document.getElementById("message");
@@ -118,8 +133,66 @@ const skipBtn = document.getElementById("skipBtn");
 const scoreBox = document.getElementById("score");
 const canvas = document.getElementById("overlay");
 const ctx = canvas.getContext("2d");
+const balloonCanvas = document.getElementById("balloonCanvas");
+const bctx = balloonCanvas.getContext("2d");
 
-// Rounds setup (your snake images + hotspots)
+// Resize balloons canvas
+function resizeBalloonCanvas() {
+  balloonCanvas.width = window.innerWidth;
+  balloonCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeBalloonCanvas);
+resizeBalloonCanvas();
+
+// 🎈 Balloons
+let balloons = [];
+function createBalloons(count = 20) {
+  balloons = [];
+  for (let i = 0; i < count; i++) {
+    balloons.push({
+      x: Math.random() * balloonCanvas.width,
+      y: balloonCanvas.height + Math.random() * 200,
+      radius: 20 + Math.random() * 15,
+      color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+      speed: 1 + Math.random() * 2
+    });
+  }
+}
+
+function drawBalloons() {
+  bctx.clearRect(0, 0, balloonCanvas.width, balloonCanvas.height);
+  balloons.forEach(b => {
+    bctx.beginPath();
+    bctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+    bctx.fillStyle = b.color;
+    bctx.fill();
+    bctx.strokeStyle = "black";
+    bctx.stroke();
+    bctx.beginPath(); // string
+    bctx.moveTo(b.x, b.y + b.radius);
+    bctx.lineTo(b.x, b.y + b.radius + 30);
+    bctx.strokeStyle = "white";
+    bctx.stroke();
+  });
+}
+
+function updateBalloons() {
+  balloons.forEach(b => {
+    b.y -= b.speed;
+    if (b.y + b.radius < 0) {
+      b.y = balloonCanvas.height + Math.random() * 100;
+      b.x = Math.random() * balloonCanvas.width;
+    }
+  });
+}
+
+function animateBalloons() {
+  drawBalloons();
+  updateBalloons();
+  requestAnimationFrame(animateBalloons);
+}
+
+// Rounds setup (same as before)
 const rounds = [
   { src: "snake2.jpg", hotspot: { type: "circle", x: 695, y: 337, radius: 301 }, solved: false },
   { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false },
@@ -209,6 +282,7 @@ function loadRound() {
 
 img.onload = () => resizeCanvas();
 
+// ✅ Click to find snake
 img.addEventListener("click", function(event) {
   if (rounds[currentRound].solved) return;
 
@@ -252,10 +326,10 @@ img.addEventListener("click", function(event) {
   }
 });
 
-// 🔸 NEW: Skip Button
+// 🔸 Skip Button
 skipBtn.addEventListener("click", function() {
   if (!rounds[currentRound].solved) {
-    rounds[currentRound].solved = true; // mark solved, but no score increment
+    rounds[currentRound].solved = true;
     drawHotspot(rounds[currentRound].hotspot);
     message.textContent = "Skipped! Here's the snake.";
     message.style.color = "#ffa500";
@@ -268,7 +342,7 @@ nextBtn.addEventListener("click", function() {
   if (currentRound < rounds.length) {
     loadRound();
   } else {
-    // End of game
+    // 🎉 End of game
     img.style.display = "none";
     canvas.style.display = "none";
     nextBtn.style.display = "none";
@@ -290,9 +364,18 @@ nextBtn.addEventListener("click", function() {
     message.textContent = finalMessage;
     message.style.color = "#FFD700";
 
-    // 🎉 Confetti for 5 sec
-    confetti.start();
-    setTimeout(() => confetti.stop(), 5000);
+    // 🎉 Confetti only for 10/10
+    if (score === 10) {
+      confetti({ particleCount: 150, spread: 120, origin: { y: 0.8 } });
+      setInterval(() => {
+        confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 } });
+      }, 700);
+    }
+
+    // 🎈 Balloons always appear
+    balloonCanvas.style.display = "block";
+    createBalloons(25);
+    animateBalloons();
   }
 });
 
@@ -308,7 +391,7 @@ backBtn.addEventListener("click", function() {
   }
 });
 
-// Start
+// Start game
 loadRound();
 scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
 </script>
