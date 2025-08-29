@@ -172,7 +172,7 @@ function restartGame() {
 
 // Send data to Google Sheet
 function sendToGoogleSheet(email, score) {
-  fetch("YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL", {
+  fetch("https://script.google.com/macros/s/AKfycbxKfEnCgKuX7_5H4k4Wh5Nzp4Xf5-_Wy6i8w9r8tf6Ur6ZLFIoOD9sm2YbxxOvhnl0/exec", {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
