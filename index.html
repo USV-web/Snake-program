@@ -89,6 +89,9 @@
       background: #e04646;
     }
   </style>
+
+  <!-- 🎉 Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
   <h1>🐍 Find the Snake!</h1>
@@ -117,7 +120,6 @@ const ctx = canvas.getContext("2d");
 
 // Snake rounds with hotspots
 const rounds = [
- 
   { src: "snake2.jpg", hotspot: { type: "circle", x: 695, y: 337, radius: 301 }, solved: false },
   { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false },
   { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 }, solved: false },
@@ -254,12 +256,30 @@ nextBtn.addEventListener("click", function() {
   if (currentRound < rounds.length) {
     loadRound();
   } else {
+    // End of game
     img.style.display = "none";
     canvas.style.display = "none";
-    message.textContent = "🎉 Game Over!";
-    scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
     nextBtn.style.display = "none";
     backBtn.style.display = "none";
+
+    let finalMessage = "";
+    if (score === 10) {
+      finalMessage = "🐍 Snake Master! Incredible eyesight!";
+    } else if (score >= 8) {
+      finalMessage = "🦎 Great Job! You’re a Snake Spotter!";
+    } else if (score >= 5) {
+      finalMessage = "👀 Good Try! Keep practicing your spotting skills!";
+    } else {
+      finalMessage = "🌱 Don’t worry! Next time you’ll catch them all!";
+    }
+
+    scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
+    message.textContent = finalMessage;
+    message.style.color = "#FFD700"; // gold highlight
+
+    // 🎉 Confetti for 5 seconds
+    confetti.start();
+    setTimeout(() => confetti.stop(), 5000);
   }
 });
 
