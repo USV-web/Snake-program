@@ -17,13 +17,11 @@ body {
   color: white;
   text-align: center;
 }
-
 h1 {
   font-size: 2.5em;
   margin-bottom: 10px;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
 }
-
 #score {
   background: rgba(0,0,0,0.6);
   padding: 8px 16px;
@@ -31,7 +29,6 @@ h1 {
   font-size: 1.2em;
   margin-bottom: 20px;
 }
-
 .game-container {
   position: relative;
   display: inline-block;
@@ -39,62 +36,37 @@ h1 {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+  width: 90vw;
+  height: 70vh;
 }
-
 #draggableWrapper {
   display: inline-block;
   cursor: grab;
   touch-action: none;
 }
-
-#draggableWrapper.dragging {
-  cursor: grabbing;
-}
-
+#draggableWrapper.dragging { cursor: grabbing; }
 #gameImage {
   display: block;
   border-radius: 12px;
-  max-width: 90vw;
-  max-height: 70vh;
+  width: 100%;
+  height: 100%;
   user-select: none;
   pointer-events: all;
 }
-
 #overlay {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
-
 #message {
   margin-top: 15px;
   font-size: 1.3em;
   font-weight: bold;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
 }
-
-.controls {
-  margin-top: 20px;
-}
-
-.zoom-controls {
-  margin-top: 10px;
-}
-
-.zoom-controls button {
-  background: #2196F3;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin: 3px;
-}
-.zoom-controls button:hover {
-  background: #0b7dda;
-}
-
 button {
   background: #4CAF50;
   color: white;
@@ -107,13 +79,10 @@ button {
   transition: 0.3s;
 }
 button:hover { background: #45a049; }
-
 #backBtn { background: #ff5252; }
 #backBtn:hover { background: #e04646; }
-
 #skipBtn { background: #ff9800; }
 #skipBtn:hover { background: #e68a00; }
-
 /* Game Over */
 #gameOverScreen {
   position: fixed;
@@ -126,7 +95,6 @@ button:hover { background: #45a049; }
   align-items: center;
   z-index: 2000;
 }
-
 #gameOverCard {
   background: white;
   color: black;
@@ -136,37 +104,20 @@ button:hover { background: #45a049; }
   max-width: 400px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
 #gameOverCard h2 { font-size: 2em; margin-bottom: 10px; }
 #gameOverCard p { font-size: 1.2em; margin-bottom: 20px; }
-
-.gameOverBtns button {
-  margin: 8px;
-  padding: 12px 18px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1em;
-  cursor: pointer;
-}
-
-.restartBtn { background: #4CAF50; color: white; }
-.restartBtn:hover { background: #3b8a3d; }
-
-.infoBtn { background: #2196F3; color: white; }
-.infoBtn:hover { background: #0b7dda; }
-
-/* Balloon canvas */
+.gameOverBtns button { margin: 8px; padding: 12px 18px; border-radius: 10px; cursor:pointer;}
+.restartBtn { background: #4CAF50; color:white;}
+.restartBtn:hover { background:#3b8a3d;}
 #balloonCanvas {
   position: fixed;
-  top:0;
-  left:0;
+  top:0; left:0;
   width:100vw;
   height:100vh;
   pointer-events:none;
   z-index:2100;
   display:none;
 }
-
 /* Email screen */
 #emailScreen {
   position: fixed;
@@ -181,29 +132,10 @@ button:hover { background: #45a049; }
   color:white;
   z-index:3000;
 }
-#emailInput {
-  padding: 12px;
-  font-size:1em;
-  border-radius:8px;
-  border:none;
-  width:250px;
-  margin:10px;
-}
-#startBtn {
-  padding:12px 20px;
-  font-size:1em;
-  border:none;
-  border-radius:8px;
-  background:#4CAF50;
-  color:white;
-  cursor:pointer;
-}
+#emailInput { padding: 12px; font-size:1em; border-radius:8px; border:none; width:250px; margin:10px;}
+#startBtn { padding:12px 20px; font-size:1em; border:none; border-radius:8px; background:#4CAF50; color:white; cursor:pointer;}
 #startBtn:hover { background:#3b8a3d; }
-#emailError {
-  color:#ff5252;
-  margin-top:10px;
-  display:none;
-}
+#emailError { color:#ff5252; margin-top:10px; display:none;}
 </style>
 </head>
 <body>
@@ -220,28 +152,19 @@ button:hover { background: #45a049; }
 <div id="gameScreen" style="display:none;">
   <h1>🐍 Find the Snake!</h1>
   <div id="score">Score: 0 / 10</div>
-
   <div class="game-container">
     <div id="draggableWrapper">
       <img id="gameImage" src="" alt="Snake Game">
       <canvas id="overlay"></canvas>
     </div>
   </div>
-
-  <div class="zoom-controls">
-    <button id="zoomInBtn">➕ Zoom In</button>
-    <button id="zoomOutBtn">➖ Zoom Out</button>
-  </div>
-
   <div id="message"></div>
   <div class="controls">
     <button id="backBtn" style="display:none;">⬅ Back</button>
     <button id="skipBtn" style="display:none;">Skip / Show Answer</button>
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
-
   <canvas id="balloonCanvas"></canvas>
-
   <div id="gameOverScreen">
     <div id="gameOverCard">
       <h2 id="finalTitle">Game Over</h2>
@@ -268,7 +191,7 @@ const ctx = canvas.getContext("2d");
 const balloonCanvas = document.getElementById("balloonCanvas");
 const bctx = balloonCanvas.getContext("2d");
 
-// Email screen
+// Email
 const emailScreen = document.getElementById("emailScreen");
 const gameScreen = document.getElementById("gameScreen");
 const emailInput = document.getElementById("emailInput");
@@ -283,11 +206,11 @@ let currentRound = 0;
 let score = 0;
 let balloons = [];
 
-// Zoom + pan
+// Zoom & pan
 let zoom = 1;
 const ZOOM_STEP = 0.1;
-let offset = {x: 0, y: 0};
-let dragStart = {x: 0, y: 0};
+let offset = {x:0,y:0};
+let dragStart = {x:0,y:0};
 let isDragging = false;
 
 // Snake rounds
@@ -318,22 +241,24 @@ startBtn.addEventListener("click",()=>{
   loadRound();
 });
 
-// ---------- GAME LOGIC ----------
+// ---------- CANVAS ----------
 function resizeCanvas(){
-  canvas.width=img.clientWidth;
-  canvas.height=img.clientHeight;
+  canvas.width = img.clientWidth;
+  canvas.height = img.clientHeight;
 }
 
 function drawHotspot(hotspot){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle="red";
-  ctx.lineWidth=3;
-  const scaleX = (img.clientWidth / img.naturalWidth) * zoom;
-  const scaleY = (img.clientHeight / img.naturalHeight) * zoom;
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 3;
+  const scaleX = (img.clientWidth/img.naturalWidth);
+  const scaleY = (img.clientHeight/img.naturalHeight);
+  const xOffset = 0;
+  const yOffset = 0;
 
   if(hotspot.type==="circle"){
     ctx.beginPath();
-    ctx.arc(hotspot.x*scaleX,hotspot.y*scaleY,hotspot.radius*Math.max(scaleX,scaleY),0,2*Math.PI);
+    ctx.arc(hotspot.x*scaleX, hotspot.y*scaleY, hotspot.radius*Math.max(scaleX,scaleY),0,Math.PI*2);
     ctx.stroke();
   } else if(hotspot.type==="rect"){
     const x=Math.min(hotspot.x1,hotspot.x2)*scaleX;
@@ -353,7 +278,28 @@ function drawHotspot(hotspot){
   }
 }
 
-// Point in polygon function
+// ---------- ROUND ----------
+function loadRound(){
+  img.src=rounds[currentRound].src;
+  message.textContent="";
+  nextBtn.style.display="none";
+  skipBtn.style.display="inline-block";
+  backBtn.style.display=currentRound>0?"inline-block":"none";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  img.onload=()=>{
+    resizeCanvas();
+    applyZoom();
+  };
+  if(rounds[currentRound].solved){
+    drawHotspot(rounds[currentRound].hotspot);
+    message.textContent="✅ Already solved!";
+    message.style.color="#76ff03";
+    nextBtn.style.display="inline-block";
+    skipBtn.style.display="none";
+  }
+}
+
+// ---------- IMAGE CLICK ----------
 function pointInPolygon(px,py,points){
   let inside=false;
   for(let i=0,j=points.length-1;i<points.length;j=i++){
@@ -365,25 +311,6 @@ function pointInPolygon(px,py,points){
   return inside;
 }
 
-function loadRound(){
-  img.src=rounds[currentRound].src;
-  message.textContent="";
-  nextBtn.style.display="none";
-  skipBtn.style.display="inline-block";
-  backBtn.style.display=currentRound>0?"inline-block":"none";
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  img.onload=()=>resizeCanvas();
-
-  if(rounds[currentRound].solved){
-    drawHotspot(rounds[currentRound].hotspot);
-    message.textContent="✅ Already solved!";
-    message.style.color="#76ff03";
-    nextBtn.style.display="inline-block";
-    skipBtn.style.display="none";
-  }
-}
-
-// ---------- IMAGE CLICK ----------
 img.addEventListener("click",function(event){
   if(rounds[currentRound].solved) return;
   const rect=img.getBoundingClientRect();
@@ -391,7 +318,6 @@ img.addEventListener("click",function(event){
   const y=(event.clientY-rect.top)*(img.naturalHeight/img.clientHeight);
   const hotspot=rounds[currentRound].hotspot;
   let correct=false;
-
   if(hotspot.type==="circle"){
     const dx=x-hotspot.x, dy=y-hotspot.y;
     correct=Math.sqrt(dx*dx+dy*dy)<=hotspot.radius;
@@ -401,7 +327,6 @@ img.addEventListener("click",function(event){
   } else if(hotspot.type==="rotatedRect"){
     correct=pointInPolygon(x,y,hotspot.points);
   }
-
   if(correct){
     message.textContent="✅ Correct! You found the snake!";
     message.style.color="#76ff03";
@@ -426,18 +351,15 @@ skipBtn.addEventListener("click",function(){
   nextBtn.style.display="inline-block";
   skipBtn.style.display="none";
 });
-
 nextBtn.addEventListener("click",function(){
   currentRound++;
   if(currentRound<rounds.length) loadRound();
   else endGame();
 });
-
 backBtn.addEventListener("click",function(){
   if(currentRound>0){
     if(rounds[currentRound].solved&&score>0){
-      score--;
-      rounds[currentRound].solved=false;
+      score--; rounds[currentRound].solved=false;
       scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
     }
     currentRound--;
@@ -452,24 +374,20 @@ function endGame(){
   nextBtn.style.display="none";
   backBtn.style.display="none";
   skipBtn.style.display="none";
-
   let finalMessage="";
   if(score===10) finalMessage="🐍 Snake Master! Incredible eyesight!";
   else if(score>=8) finalMessage="🦎 Great Job! You’re a Snake Spotter!";
   else if(score>=5) finalMessage="👀 Good Try! Keep practicing your spotting skills!";
   else finalMessage="🌱 Don’t worry! Next time you’ll catch them all!";
-
   document.getElementById("finalTitle").textContent="🎮 Game Over!";
   document.getElementById("finalMessage").textContent=`Score: ${score}/10 - ${finalMessage}`;
   document.getElementById("gameOverScreen").style.display="flex";
-
   if(score===rounds.length) celebrate();
-
   if(!dataSubmitted){
     dataSubmitted=true;
     const endTime=new Date();
     const timeTaken=Math.floor((endTime-startTime)/1000);
-    const url="https://script.google.com/macros/s/AKfycbxKfEnCgKuX7_5H4k4Wh5Nzp4Xf5-_Wy6i8w9r8tf6Ur6ZLFIoOD9sm2YbxxOvhnl0/exec";
+    const url="https://script.google.com/macros/s/YOUR_SCRIPT_URL/exec";
     fetch(`${url}?email=${encodeURIComponent(playerEmail)}&score=${score}&timeTaken=${timeTaken}`)
       .then(res=>res.text()).then(console.log).catch(console.error);
   }
@@ -482,13 +400,7 @@ function celebrate(){
   balloonCanvas.height=window.innerHeight;
   balloons=[];
   for(let i=0;i<30;i++){
-    balloons.push({
-      x:Math.random()*balloonCanvas.width,
-      y:balloonCanvas.height+Math.random()*500,
-      r:20+Math.random()*30,
-      c:`hsl(${Math.random()*360},70%,60%)`,
-      s:1+Math.random()*2
-    });
+    balloons.push({x:Math.random()*balloonCanvas.width,y:balloonCanvas.height+Math.random()*500,r:20+Math.random()*30,c:`hsl(${Math.random()*360},70%,60%)`,s:1+Math.random()*2});
   }
   let balloonAnimation=true;
   function updateBalloons(){
@@ -498,101 +410,103 @@ function celebrate(){
       b.y-=b.s;
       bctx.beginPath();
       bctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-      bctx.fillStyle=b.c;
-      bctx.fill();
+      bctx.fillStyle=b.c; bctx.fill();
     }
     requestAnimationFrame(updateBalloons);
   }
   updateBalloons();
-
-  const duration=5000;
-  const end=Date.now()+duration;
+  const duration=5000; const end=Date.now()+duration;
   if(score===rounds.length){
     (function frame(){
       confetti({particleCount:5,angle:60,spread:55,origin:{x:0}});
-      confetti({particleCount:5,angle:120,spread:55,origin:{x:1}});
-      if(Date.now()<end) requestAnimationFrame(frame);
-    })();
-  }
+      confetti({particleCount:5,angle:120,spread:55,origin:{x:1});
+      
+if(Date.now()<end) requestAnimationFrame(frame);
+})();
+}
 
-  setTimeout(()=>{
-    balloonAnimation=false;
-    balloonCanvas.style.display="none";
-    bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
-  },5000);
+setTimeout(()=>{
+balloonAnimation=false;
+balloonCanvas.style.display="none";
+bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
+},5000);
 }
 
 // ---------- RESTART ----------
 function restartGame(){
-  score=0;
-  currentRound=0;
-  rounds.forEach(r=>r.solved=false);
-  scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
-  img.style.display="block";
-  canvas.style.display="block";
-  document.getElementById("gameOverScreen").style.display="none";
-  zoom = 1;
-  offset = {x:0, y:0};
-  applyZoom();
-  loadRound();
+score=0;
+currentRound=0;
+rounds.forEach(r=>r.solved=false);
+scoreBox.textContent=Score: ${score} / ${rounds.length};
+img.style.display="block";
+canvas.style.display="block";
+document.getElementById("gameOverScreen").style.display="none";
+zoom=1; offset={x:0,y:0};
+applyZoom();
+loadRound();
 }
 
 // ---------- ZOOM & PAN ----------
 function applyZoom(){
-  wrapper.style.transform = `translate(${offset.x}px,${offset.y}px) scale(${zoom})`;
-  drawHotspot(rounds[currentRound].hotspot);
+// Limit pan boundaries
+const container = document.querySelector(".game-container");
+const maxX = (img.clientWidthzoom - container.clientWidth)/2;
+const maxY = (img.clientHeightzoom - container.clientHeight)/2;
+offset.x = Math.min(maxX, Math.max(-maxX, offset.x));
+offset.y = Math.min(maxY, Math.max(-maxY, offset.y));
+
+wrapper.style.transform = translate(${offset.x}px,${offset.y}px) scale(${zoom});
+if(rounds[currentRound]) drawHotspot(rounds[currentRound].hotspot);
 }
 
-// Zoom buttons
-document.getElementById("zoomInBtn").addEventListener("click",()=>{
-  zoom += ZOOM_STEP;
-  applyZoom();
-});
-document.getElementById("zoomOutBtn").addEventListener("click",()=>{
-  zoom = Math.max(0.5, zoom-ZOOM_STEP);
-  applyZoom();
-});
-
 // Mouse wheel zoom
-img.addEventListener("wheel",e=>{
-  e.preventDefault();
-  if(e.deltaY<0) zoom+=ZOOM_STEP;
-  else zoom=Math.max(0.5, zoom-ZOOM_STEP);
-  applyZoom();
+wrapper.addEventListener("wheel",e=>{
+e.preventDefault();
+const oldZoom = zoom;
+if(e.deltaY<0) zoom += ZOOM_STEP;
+else zoom = Math.max(0.5, zoom-ZOOM_STEP);
+
+// Adjust offset so zoom centers on mouse
+const rect = wrapper.getBoundingClientRect();
+const mx = e.clientX - rect.left;
+const my = e.clientY - rect.top;
+offset.x -= (mx/oldZoom - mx/zoom);
+offset.y -= (my/oldZoom - my/zoom);
+
+applyZoom();
 });
 
 // Drag / Pan
 wrapper.addEventListener("mousedown",e=>{
-  isDragging=true;
-  dragStart={x:e.clientX-offset.x, y:e.clientY-offset.y};
-  wrapper.classList.add("dragging");
+isDragging=true;
+dragStart={x:e.clientX-offset.x, y:e.clientY-offset.y};
+wrapper.classList.add("dragging");
 });
 window.addEventListener("mousemove",e=>{
-  if(!isDragging) return;
-  offset.x = e.clientX-dragStart.x;
-  offset.y = e.clientY-dragStart.y;
-  applyZoom();
+if(!isDragging) return;
+offset.x = e.clientX - dragStart.x;
+offset.y = e.clientY - dragStart.y;
+applyZoom();
 });
 window.addEventListener("mouseup",()=>{
-  isDragging=false;
-  wrapper.classList.remove("dragging");
+isDragging=false; wrapper.classList.remove("dragging");
 });
 
 // Touch events
 wrapper.addEventListener("touchstart",e=>{
-  isDragging=true;
-  const t=e.touches[0];
-  dragStart={x:t.clientX-offset.x, y:t.clientY-offset.y};
+isDragging=true;
+const t=e.touches[0];
+dragStart={x:t.clientX-offset.x, y:t.clientY-offset.y};
 });
 window.addEventListener("touchmove",e=>{
-  if(!isDragging) return;
-  const t=e.touches[0];
-  offset.x = t.clientX-dragStart.x;
-  offset.y = t.clientY-dragStart.y;
-  applyZoom();
+if(!isDragging) return;
+const t=e.touches[0];
+offset.x = t.clientX-dragStart.x;
+offset.y = t.clientY-dragStart.y;
+applyZoom();
 });
 window.addEventListener("touchend",()=>{isDragging=false;});
 
-</script>
-</body>
-</html>
+</script> 
+</body> 
+</html> 
