@@ -2,77 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find the Snake</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
   <style>
- body {
-  margin: 0;
-  font-family: 'Roboto Slab', serif;
-  text-align: center;
-  color: #f0f5e4;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("https://images.pexels.com/photos/31533982/pexels-photo-31533982.jpeg") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 70px; /* ✅ Push content below browser bar */
+      color: white;
+      text-align: center;
+    }
 
-  /* 🌿 Forest background */
-  background: url("https://images.pexels.com/photos/31533982/pexels-photo-31533982.jpeg") 
-              no-repeat center center fixed;
-  background-size: cover;
-}
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
 
-    h1 { margin-top: 10px; font-size: 2.5em; color: #d4f7c5; text-shadow: 2px 2px 4px #000; }
-    p { font-size: 1.2em; color: #e3f2d0; margin-bottom: 10px; }
-#gameContainer {
-  background: rgba(0, 0, 0, 0.55); /* darker overlay for readability */
-  border: 3px solid #2e7d32;
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0px 8px 25px rgba(0,0,0,0.6);
-  max-width: 90vw;
-  position: relative;
-  display: inline-block;
-}
+    #score {
+      background: rgba(0,0,0,0.6);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .game-container {
+      position: relative;
+      display: inline-block;
+      border: 3px solid #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+    }
 
     #gameImage {
+      max-width: 90vw;
       max-height: 70vh;
-      width: auto;
-      cursor: crosshair;
-      border-radius: 10px;
-      box-shadow: 0px 5px 15px rgba(0,0,0,0.6);
-      margin-bottom: 15px;
+      display: block;
+      border-radius: 12px;
     }
+
     #overlay {
       position: absolute;
-      left: 0;
       top: 0;
-      pointer-events: none; /* clicks go through */
+      left: 0;
+      pointer-events: none;
     }
-    #message { font-size: 1.5em; margin: 15px; min-height: 2em; }
-    #controls { margin-top: 10px; }
+
+    #message {
+      margin-top: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
     button {
-      padding: 10px 25px; font-size: 1em; border: none; border-radius: 8px;
-      background-color: #2e7d32; color: #fff; cursor: pointer; transition: 0.2s;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
-      margin: 0 5px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 5px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    button:hover { background-color: #388e3c; transform: scale(1.05); }
-    #score { margin-top: 15px; font-size: 1.3em; color: #d4f7c5; }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    #backBtn {
+      background: #ff5252;
+    }
+    #backBtn:hover {
+      background: #e04646;
+    }
   </style>
 </head>
 <body>
   <h1>🐍 Find the Snake!</h1>
-  <p>Click where you think the snake is hiding...</p>
-  <div id="gameContainer">
-    <img id="gameImage" src="" alt="Find the snake">
+  <div id="score">Score: 0 / 6</div>
+
+  <div class="game-container">
+    <img id="gameImage" src="" alt="Snake Game">
     <canvas id="overlay"></canvas>
-    <div id="message"></div>
-    <div id="controls">
-      <button id="backBtn" style="display:none;">⬅️ Back</button>
-      <button id="nextBtn" style="display:none;">Next Snake ➡️</button>
-    </div>
-    <div id="score"></div>
+  </div>
+
+  <div id="message"></div>
+
+  <div class="controls">
+    <button id="backBtn" style="display:none;">⬅ Back</button>
+    <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
 
  <script>
