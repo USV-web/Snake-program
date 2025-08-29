@@ -13,7 +13,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 70px; /* ✅ Push content below browser bar */
+      padding-top: 70px;
       color: white;
       text-align: center;
     }
@@ -82,15 +82,14 @@
       background: #45a049;
     }
 
-    #backBtn {
-      background: #ff5252;
-    }
-    #backBtn:hover {
-      background: #e04646;
-    }
+    #backBtn { background: #ff5252; }
+    #backBtn:hover { background: #e04646; }
+
+    #skipBtn { background: #ffa500; }
+    #skipBtn:hover { background: #e68a00; }
   </style>
 
-  <!-- 🎉 Confetti library -->
+  <!-- 🎉 Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -106,6 +105,7 @@
 
   <div class="controls">
     <button id="backBtn" style="display:none;">⬅ Back</button>
+    <button id="skipBtn">🙈 Skip / Show Answer</button>
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
 
@@ -114,11 +114,12 @@ const img = document.getElementById("gameImage");
 const message = document.getElementById("message");
 const nextBtn = document.getElementById("nextBtn");
 const backBtn = document.getElementById("backBtn");
+const skipBtn = document.getElementById("skipBtn");
 const scoreBox = document.getElementById("score");
 const canvas = document.getElementById("overlay");
 const ctx = canvas.getContext("2d");
 
-// Snake rounds with hotspots
+// Rounds setup (your snake images + hotspots)
 const rounds = [
   { src: "snake2.jpg", hotspot: { type: "circle", x: 695, y: 337, radius: 301 }, solved: false },
   { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false },
@@ -251,6 +252,17 @@ img.addEventListener("click", function(event) {
   }
 });
 
+// 🔸 NEW: Skip Button
+skipBtn.addEventListener("click", function() {
+  if (!rounds[currentRound].solved) {
+    rounds[currentRound].solved = true; // mark solved, but no score increment
+    drawHotspot(rounds[currentRound].hotspot);
+    message.textContent = "🙈 Skipped! Here's the snake.";
+    message.style.color = "#ffa500";
+    nextBtn.style.display = "inline-block";
+  }
+});
+
 nextBtn.addEventListener("click", function() {
   currentRound++;
   if (currentRound < rounds.length) {
@@ -261,6 +273,7 @@ nextBtn.addEventListener("click", function() {
     canvas.style.display = "none";
     nextBtn.style.display = "none";
     backBtn.style.display = "none";
+    skipBtn.style.display = "none";
 
     let finalMessage = "";
     if (score === 10) {
@@ -275,9 +288,9 @@ nextBtn.addEventListener("click", function() {
 
     scoreBox.textContent = `Your Score: ${score} / ${rounds.length}`;
     message.textContent = finalMessage;
-    message.style.color = "#FFD700"; // gold highlight
+    message.style.color = "#FFD700";
 
-    // 🎉 Confetti for 5 seconds
+    // 🎉 Confetti for 5 sec
     confetti.start();
     setTimeout(() => confetti.stop(), 5000);
   }
@@ -285,7 +298,7 @@ nextBtn.addEventListener("click", function() {
 
 backBtn.addEventListener("click", function() {
   if (currentRound > 0) {
-    if (rounds[currentRound].solved) {
+    if (rounds[currentRound].solved && score > 0) {
       score--;
       rounds[currentRound].solved = false;
       scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
@@ -299,6 +312,5 @@ backBtn.addEventListener("click", function() {
 loadRound();
 scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
 </script>
-
 </body>
 </html>
