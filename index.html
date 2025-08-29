@@ -92,7 +92,7 @@
 </head>
 <body>
   <h1>🐍 Find the Snake!</h1>
-  <div id="score">Score: 0 / 6</div>
+  <div id="score">Score: 0 / 10</div>
 
   <div class="game-container">
     <img id="gameImage" src="" alt="Snake Game">
@@ -106,8 +106,8 @@
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
 
- <script>
- const img = document.getElementById("gameImage");
+<script>
+const img = document.getElementById("gameImage");
 const message = document.getElementById("message");
 const nextBtn = document.getElementById("nextBtn");
 const backBtn = document.getElementById("backBtn");
@@ -117,12 +117,25 @@ const ctx = canvas.getContext("2d");
 
 // Snake rounds with hotspots
 const rounds = [
+ 
   { src: "snake2.jpg", hotspot: { type: "circle", x: 695, y: 337, radius: 301 }, solved: false },
   { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false },
   { src: "snake1.jpg", hotspot: { type: "rect", x1: 506, y1: 271, x2: 971, y2: 455 }, solved: false },
   { src: "snake3.jpg", hotspot: { type: "rect", x1: 203, y1: 24, x2: 255, y2: 395 }, solved: false },
   { src: "snake4.jpg", hotspot: { type: "rect", x1: 243, y1: 109, x2: 294, y2: 204 }, solved: false },
-  { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 }, solved: false }
+  { src: "snake5.jpg", hotspot: { type: "circle", x: 261, y: 171, radius: 29 }, solved: false },
+  { src: "snake7.jpg", hotspot: { type: "circle", x: 320, y: 220, radius: 80 }, solved: false },
+  { src: "snake10.jpg", hotspot: { 
+      type: "rotatedRect",
+      points: [
+        { x: 626, y: 466 },
+        { x: 637, y: 509 },
+        { x: 169, y: 735 },
+        { x: 121, y: 666 }
+      ]
+    }, solved: false },
+  { src: "snake9.jpg", hotspot: { type: "circle", x: 500, y: 400, radius: 60 }, solved: false },
+  { src: "snake8.jpg", hotspot: { type: "rect", x1: 150, y1: 100, x2: 400, y2: 300 }, solved: false }
 ];
 
 let currentRound = 0;
@@ -151,7 +164,29 @@ function drawHotspot(hotspot) {
     const w = Math.abs(hotspot.x2 - hotspot.x1) * scaleX;
     const h = Math.abs(hotspot.y2 - hotspot.y1) * scaleY;
     ctx.strokeRect(x1, y1, w, h);
+  } else if (hotspot.type === "rotatedRect") {
+    ctx.beginPath();
+    hotspot.points.forEach((p, i) => {
+      const px = p.x * scaleX;
+      const py = p.y * scaleY;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.stroke();
   }
+}
+
+function pointInPolygon(px, py, points) {
+  let inside = false;
+  for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+    const xi = points[i].x, yi = points[i].y;
+    const xj = points[j].x, yj = points[j].y;
+    const intersect = ((yi > py) !== (yj > py)) &&
+      (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
 }
 
 function loadRound() {
@@ -161,7 +196,6 @@ function loadRound() {
   backBtn.style.display = currentRound > 0 ? "inline-block" : "none";
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // If already solved, redraw hotspot & show correct message
   if (rounds[currentRound].solved) {
     drawHotspot(rounds[currentRound].hotspot);
     message.textContent = "✅ Already solved!";
@@ -173,7 +207,7 @@ function loadRound() {
 img.onload = () => resizeCanvas();
 
 img.addEventListener("click", function(event) {
-  if (rounds[currentRound].solved) return; // Don’t rescore solved rounds
+  if (rounds[currentRound].solved) return;
 
   const rect = img.getBoundingClientRect();
   const x = event.clientX - rect.left;
@@ -190,14 +224,15 @@ img.addEventListener("click", function(event) {
   if (hotspot.type === "circle") {
     const dx = clickX - hotspot.x;
     const dy = clickY - hotspot.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    correct = distance <= hotspot.radius;
+    correct = Math.sqrt(dx*dx + dy*dy) <= hotspot.radius;
   } else if (hotspot.type === "rect") {
     correct =
       clickX >= Math.min(hotspot.x1, hotspot.x2) &&
       clickX <= Math.max(hotspot.x1, hotspot.x2) &&
       clickY >= Math.min(hotspot.y1, hotspot.y2) &&
       clickY <= Math.max(hotspot.y1, hotspot.y2);
+  } else if (hotspot.type === "rotatedRect") {
+    correct = pointInPolygon(clickX, clickY, hotspot.points);
   }
 
   if (correct) {
@@ -230,7 +265,6 @@ nextBtn.addEventListener("click", function() {
 
 backBtn.addEventListener("click", function() {
   if (currentRound > 0) {
-    // ✅ If solved, undo the score before going back
     if (rounds[currentRound].solved) {
       score--;
       rounds[currentRound].solved = false;
@@ -241,10 +275,9 @@ backBtn.addEventListener("click", function() {
   }
 });
 
-// Start first round
+// Start
 loadRound();
 scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
-
 </script>
 
 </body>
