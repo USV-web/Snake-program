@@ -66,6 +66,23 @@ h1 {
   margin-top: 20px;
 }
 
+  
+<div class="zoom-controls">
+  <button id="zoomInBtn">➕ Zoom In</button>
+  <button id="zoomOutBtn">➖ Zoom Out</button>
+</div>
+
+  .zoom-controls {
+  margin-top: 10px;
+}
+.zoom-controls button {
+  background: #2196F3;
+}
+.zoom-controls button:hover {
+  background: #0b7dda;
+}
+
+  
 button {
   background: #4CAF50;
   color: white;
@@ -282,8 +299,9 @@ function drawHotspot(hotspot){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="red";
   ctx.lineWidth=3;
-  const scaleX=img.clientWidth/img.naturalWidth;
-  const scaleY=img.clientHeight/img.naturalHeight;
+  const scaleX = (img.clientWidth / img.naturalWidth) * zoom;
+const scaleY = (img.clientHeight / img.naturalHeight) * zoom;
+
 
   if(hotspot.type==="circle"){
     ctx.beginPath();
@@ -488,6 +506,40 @@ function restartGame(){
   document.getElementById("gameOverScreen").style.display="none";
   loadRound();
 }
+
+  let zoom = 1;
+const ZOOM_STEP = 0.1;
+
+// Apply zoom to image + overlay
+function applyZoom() {
+  img.style.transform = `scale(${zoom})`;
+  canvas.style.transform = `scale(${zoom})`;
+  drawHotspot(rounds[currentRound].hotspot); // redraw hotspot to match zoom
+}
+
+// Zoom buttons
+const zoomInBtn = document.getElementById("zoomInBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+
+zoomInBtn.addEventListener("click", () => {
+  zoom += ZOOM_STEP;
+  applyZoom();
+});
+
+zoomOutBtn.addEventListener("click", () => {
+  zoom = Math.max(0.5, zoom - ZOOM_STEP); // don't shrink too much
+  applyZoom();
+});
+
+// Optional: zoom with mouse wheel
+img.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  if (e.deltaY < 0) zoom += ZOOM_STEP;
+  else zoom = Math.max(0.5, zoom - ZOOM_STEP);
+  applyZoom();
+});
+
+  
 </script>
 </body>
 </html>
