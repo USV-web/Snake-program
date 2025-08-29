@@ -5,52 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Find the Snake</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: url("https://images.pexels.com/photos/31533982/pexels-photo-31533982.jpeg") no-repeat center center fixed;
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 70px;
-  color: white;
-  text-align: center;
-}
-#emailOverlay {position: fixed;top: 0;left: 0;width: 100vw;height: 100vh;background: rgba(0,0,0,0.85);display: flex;flex-direction: column;justify-content: center;align-items: center;z-index: 3000;color: white;}
-#emailOverlay input[type="email"] {padding: 12px;font-size: 1.2em;border-radius: 8px;border: none;margin-bottom: 12px;width: 300px;}
-#emailOverlay button {padding: 12px 20px;font-size: 1em;border-radius: 8px;border: none;cursor: pointer;background: #4CAF50;color: white;}
-h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7);}
-#score { background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; font-size: 1.2em; margin-bottom: 20px;}
-.game-container { position: relative; display: inline-block; border: 3px solid #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.6);}
-#gameImage { max-width: 90vw; max-height: 70vh; display: block; border-radius: 12px;}
-#overlay { position: absolute; top: 0; left: 0; pointer-events: none;}
-#message { margin-top: 15px; font-size: 1.3em; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.7);}
-.controls { margin-top: 20px;}
-button { background: #4CAF50; color: white; border: none; padding: 12px 20px; margin: 5px; font-size: 1em; border-radius: 8px; cursor: pointer; transition: 0.3s;}
-button:hover { background: #45a049;}
-#backBtn { background: #ff5252;} #backBtn:hover { background: #e04646;}
-#skipBtn { background: #ff9800;} #skipBtn:hover { background: #e68a00;}
-#gameOverScreen { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.4); display:none; justify-content:center; align-items:center; z-index:2000;}
-#gameOverCard { background:white; color:black; padding:30px; border-radius:20px; text-align:center; max-width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.6s ease;}
-#balloonCanvas { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:2100; display:none;}
-@keyframes popIn { from { transform: scale(0.5); opacity:0;} to { transform: scale(1); opacity:1;}}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url("https://images.pexels.com/photos/31533982/pexels-photo-31533982.jpeg") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 70px;
+    color: white;
+    text-align: center;
+  }
+  h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); }
+  #score { background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; font-size: 1.2em; margin-bottom: 20px; }
+  .game-container { position: relative; display: inline-block; border: 3px solid #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.6); }
+  #gameImage { max-width: 90vw; max-height: 70vh; border-radius: 12px; cursor: crosshair; display: block; }
+  #overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
+  #message { margin-top: 15px; font-size: 1.3em; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
+  .controls { margin-top: 20px; }
+  button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 5px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background: #45a049; }
+  #backBtn { background: #ff5252; }
+  #skipBtn { background: #ff9800; }
+  #gameOverScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #gameOverCard {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: popIn 0.6s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  #balloonCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 2100;
+    display: none;
+  }
 </style>
 </head>
 <body>
-
-<div id="emailOverlay">
-  <h2>Enter your corporate email ID</h2>
-  <input type="email" id="userEmail" placeholder="Enter your email" />
-  <button onclick="submitEmail()">Submit</button>
-  <p id="emailError" style="color:red;"></p>
-</div>
 
 <h1>🐍 Find the Snake!</h1>
 <div id="score">Score: 0 / 10</div>
 
 <div class="game-container">
-  <img id="gameImage" src="" alt="Snake Game">
+  <img id="gameImage" src="#" alt="Snake Game">
   <canvas id="overlay"></canvas>
 </div>
 
@@ -66,17 +92,9 @@ button:hover { background: #45a049;}
 <div id="gameOverScreen">
   <div id="gameOverCard">
     <h2 id="finalTitle">Game Over</h2>
-    <p id="finalMessage">Your Score: 0/10</p>
-    <form id="scoreForm" action="https://script.google.com/macros/s/AKfycbzbTKl3kQr_48fJuKuhPrHiovW2gW-zBupuu_LFL3dHZh62I1LeSKxHdXjWYqCRc1o/exec" method="POST" target="hidden_iframe">
-      <input type="hidden" name="email" id="formEmail">
-      <input type="hidden" name="score" id="formScore">
-      <input type="hidden" name="timeTaken" id="formTime">
-    </form>
-    <iframe name="hidden_iframe" style="display:none;"></iframe>
-    <div class="gameOverBtns">
-      <button class="restartBtn" onclick="restartGame()">🔄 Play Again</button>
-      <button class="infoBtn" onclick="window.location.href='snake-info.html'">🐍 Learn About Snakes</button>
-    </div>
+    <p id="finalMessage">Your Score: 0 / 10</p>
+    <button class="restartBtn" onclick="restartGame()">🔄 Play Again</button>
+    <button class="infoBtn" onclick="window.location.href='snake-info.html'">🐍 Learn About Snakes</button>
   </div>
 </div>
 
@@ -85,6 +103,8 @@ button:hover { background: #45a049;}
 let userEmail = '';
 let startTime = 0;
 let balloons = [];
+
+const scriptUrl = "https://script.google.com/macros/s/AKfycbzbTKl3kQr_48fJuKuhPrHiovW2gW-zBupuu_LFL3dHZh62I1LeSKxHdXjWYqCRc1o/exec";
 
 const img = document.getElementById("gameImage");
 const message = document.getElementById("message");
@@ -97,13 +117,7 @@ const ctx = canvas.getContext("2d");
 const balloonCanvas = document.getElementById("balloonCanvas");
 const bctx = balloonCanvas.getContext("2d");
 
-const emailOverlay = document.getElementById("emailOverlay");
-const emailInput = document.getElementById("userEmail");
-const emailError = document.getElementById("emailError");
-const formEmail = document.getElementById("formEmail");
-const formScore = document.getElementById("formScore");
-const formTime = document.getElementById("formTime");
-
+// Snake rounds with hotspots (assumes snake images are uploaded and paths are correct)
 const rounds = [
   { src: "snake2.jpg", hotspot: { type: "circle", x: 695, y: 337, radius: 301 }, solved: false },
   { src: "snake6.jpg", hotspot: { type: "rect", x1: 50, y1: 155, x2: 417, y2: 232 }, solved: false },
@@ -114,92 +128,207 @@ const rounds = [
   { src: "snake7.jpeg", hotspot: { type: "circle", x: 1048, y: 2001, radius: 214 }, solved: false },
   { src: "snake10.jpg", hotspot: { type: "rotatedRect", points: [ {x:626,y:466},{x:637,y:509},{x:169,y:735},{x:121,y:666} ] }, solved: false },
   { src: "snake9.jpg", hotspot: { type: "circle", x: 470, y: 1147, radius: 69 }, solved: false },
-  { src: "snake8.jpg", hotspot: { type: "rect", x1: 331, y1: 377, x2: 489, y2: 454 }, solved: false }  // fixed order
+  { src: "snake8.jpg", hotspot: { type: "rect", x1: 331, y1: 377, x2: 489, y2: 454 }, solved: false }
 ];
 
 let currentRound = 0;
 let score = 0;
 
-function submitEmail() {
-  const email = emailInput.value.trim().toLowerCase();
-  if(!email.endsWith("@usv.in") && !email.endsWith("@svgcentre.in")){
-    emailError.textContent = "⚠️ Please enter a valid corporate email.";
-    return;
+// Ask for email before starting
+function askEmailAndStart() {
+  let email = prompt("Enter your email (@usv.in or @svgcentre.in):");
+  if (email && (email.endsWith("@usv.in") || email.endsWith("@svgcentre.in"))) {
+    userEmail = email;
+    startTime = Date.now();
+    loadRound();
+  } else {
+    alert("Please enter a corporate email ending with @usv.in or @svgcentre.in");
+    askEmailAndStart();
   }
-  userEmail = email;
-  emailOverlay.style.display = "none";
+}
+
+// JSONP save function
+function saveResult(email, score, timeTaken) {
+  const callbackName = "jsonp_cb_" + Math.random().toString(36).substr(2,9);
+  window[callbackName] = res => {
+    console.log("Save result response:", res);
+    document.body.removeChild(script);
+    delete window[callbackName];
+  };
+  const script = document.createElement("script");
+  script.src = `${scriptUrl}?email=${encodeURIComponent(email)}&score=${score}&timeTaken=${timeTaken}&callback=${callbackName}`;
+  document.body.appendChild(script);
+}
+
+// Rest of the game logic
+function resizeCanvas() { canvas.width = img.clientWidth; canvas.height = img.clientHeight; }
+function drawHotspot(h) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = "red"; ctx.lineWidth = 3;
+  const sx = img.clientWidth / img.naturalWidth;
+  const sy = img.clientHeight / img.naturalHeight;
+  if (h.type === "circle") {
+    ctx.beginPath();
+    ctx.arc(h.x * sx, h.y * sy, h.radius * sx, 0, 2 * Math.PI);
+    ctx.stroke();
+  } else if (h.type === "rect") {
+    const x1 = Math.min(h.x1, h.x2) * sx;
+    const y1 = Math.min(h.y1, h.y2) * sy;
+    ctx.strokeRect(x1, y1, Math.abs(h.x2-h.x1)*sx, Math.abs(h.y2-h.y1)*sy);
+  } else if (h.type === "rotatedRect") {
+    ctx.beginPath();
+    h.points.forEach((p, i) => {
+      const px = p.x * sx, py = p.y * sy;
+      (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py));
+    });
+    ctx.closePath(); ctx.stroke();
+  }
+}
+
+function pointInPoly(px, py, pts) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const xi = pts[i].x, yi = pts[i].y,
+          xj = pts[j].x, yj = pts[j].y;
+    const intersect = ((yi > py) !== (yj > py)) &&
+                      (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function loadRound() {
+  img.src = rounds[currentRound].src;
+  message.textContent = "";
+  nextBtn.style.display = "none";
+  skipBtn.style.display = "inline-block";
+  backBtn.style.display = currentRound ? 'inline-block' : 'none';
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (rounds[currentRound].solved) {
+    drawHotspot(rounds[currentRound].hotspot);
+    message.textContent = "✅ Already solved!";
+    message.style.color = "#76ff03";
+    nextBtn.style.display = "inline-block";
+    skipBtn.style.display = "none";
+  }
+}
+
+img.onload = resizeCanvas;
+
+img.addEventListener("click", e => {
+  if (rounds[currentRound].solved) return;
+  const rect = img.getBoundingClientRect(),
+        clickX = (e.clientX - rect.left) * (img.naturalWidth / img.width),
+        clickY = (e.clientY - rect.top) * (img.naturalHeight / img.height);
+  const h = rounds[currentRound].hotspot;
+  let correct = false;
+
+  if (h.type === "circle") {
+    const dx = clickX - h.x, dy = clickY - h.y;
+    correct = Math.hypot(dx, dy) <= h.radius;
+  } else if (h.type === "rect") {
+    correct = clickX >= Math.min(h.x1, h.x2) && clickX <= Math.max(h.x1, h.x2)
+           && clickY >= Math.min(h.y1, h.y2) && clickY <= Math.max(h.y1, h.y2);
+  } else {
+    correct = pointInPoly(clickX, clickY, h.points);
+  }
+
+  if (correct) {
+    rounds[currentRound].solved = true;
+    score++;
+    scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+    drawHotspot(h);
+    message.textContent = "✅ Correct!";
+    message.style.color = "#76ff03";
+    nextBtn.style.display = "inline-block";
+    skipBtn.style.display = "none";
+  } else {
+    message.textContent = "❌ Nope, try again!";
+    message.style.color = "#ff5252";
+  }
+});
+
+skipBtn.addEventListener("click", () => {
+  rounds[currentRound].solved = true;
+  drawHotspot(rounds[currentRound].hotspot);
+  message.textContent = "⚠️ Skipped!";
+  message.style.color = "#ffa726";
+  nextBtn.style.display = "inline-block";
+  skipBtn.style.display = "none";
+});
+
+nextBtn.addEventListener("click", () => {
+  currentRound++;
+  currentRound < rounds.length ? loadRound() : endGame();
+});
+
+backBtn.addEventListener("click", () => {
+  if (currentRound > 0) {
+    if (rounds[currentRound].solved) score--;
+    rounds[currentRound].solved = false;
+    scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+    currentRound--;
+    loadRound();
+  }
+});
+
+// Balloons & Confetti
+function createBalloons(n) {
+  balloons = [];
+  for (let i = 0; i < n; i++) {
+    balloons.push({
+      x: Math.random() * balloonCanvas.width,
+      y: balloonCanvas.height + Math.random() * 200,
+      r: 15 + Math.random() * 20,
+      color: `hsl(${Math.random()*360},100%,60%)`,
+      speed: 1 + Math.random() * 2
+    });
+  }
+}
+
+function animateBalloons() {
+  bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
+  balloons.forEach(b => {
+    b.y -= b.speed;
+    bctx.beginPath();
+    bctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+    bctx.fillStyle = b.color;
+    bctx.fill();
+  });
+  requestAnimationFrame(animateBalloons);
+}
+
+function resizeBalloons() {
+  balloonCanvas.width = window.innerWidth;
+  balloonCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeBalloons);
+resizeBalloons();
+
+function endGame() {
+  const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+  document.getElementById("finalMessage").textContent = `Your Score: ${score} / ${rounds.length} – Time: ${timeTaken}s`;
+  document.getElementById("gameOverScreen").style.display = "flex";
+  balloonCanvas.style.display = "block";
+  createBalloons(40);
+  animateBalloons();
+  confetti({ particleCount: 150, spread: 90, origin: { y: 0.7 } });
+  saveResult(userEmail, score, timeTaken);
+}
+
+function restartGame() {
+  currentRound = 0;
+  score = 0;
+  rounds.forEach(r => r.solved = false);
+  scoreBox.textContent = `Score: 0 / ${rounds.length}`;
+  document.getElementById("gameOverScreen").style.display = "none";
+  balloonCanvas.style.display = "none";
   startTime = Date.now();
   loadRound();
 }
 
-function resizeCanvas() { canvas.width=img.clientWidth; canvas.height=img.clientHeight; }
-function drawHotspot(h) {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle="red"; ctx.lineWidth=3;
-  const scaleX=img.clientWidth/img.naturalWidth;
-  const scaleY=img.clientHeight/img.naturalHeight;
-  if(h.type==="circle"){ ctx.beginPath(); ctx.arc(h.x*scaleX,h.y*scaleY,h.radius*scaleX,0,2*Math.PI); ctx.stroke();}
-  else if(h.type==="rect"){ const x1=Math.min(h.x1,h.x2)*scaleX; const y1=Math.min(h.y1,h.y2)*scaleY; ctx.strokeRect(x1,y1,Math.abs(h.x2-h.x1)*scaleX,Math.abs(h.y2-h.y1)*scaleY);}
-  else if(h.type==="rotatedRect"){ ctx.beginPath(); h.points.forEach((p,i)=>{ const px=p.x*scaleX; const py=p.y*scaleY; if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }); ctx.closePath(); ctx.stroke();}
-}
-
-function pointInPolygon(px,py,points){ let inside=false; for(let i=0,j=points.length-1;i<points.length;j=i++){ const xi=points[i].x,yi=points[i].y; const xj=points[j].x,yj=points[j].y; const intersect=((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi); if(intersect) inside=!inside;} return inside;}
-
-function loadRound(){
-  img.src=rounds[currentRound].src;
-  message.textContent=""; nextBtn.style.display="none"; skipBtn.style.display="inline-block";
-  backBtn.style.display=currentRound>0?"inline-block":"none"; ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(rounds[currentRound].solved){ drawHotspot(rounds[currentRound].hotspot); message.textContent="✅ Already solved!"; message.style.color="#76ff03"; nextBtn.style.display="inline-block"; skipBtn.style.display="none";}
-}
-img.onload=()=>resizeCanvas();
-
-img.addEventListener("click",function(event){
-  if(rounds[currentRound].solved) return;
-  const rect=img.getBoundingClientRect();
-  const x=event.clientX-rect.left; const y=event.clientY-rect.top;
-  const scaleX=img.naturalWidth/img.width; const scaleY=img.naturalHeight/img.height;
-  const clickX=x*scaleX; const clickY=y*scaleY;
-  const h=rounds[currentRound].hotspot;
-  let correct=false;
-  if(h.type==="circle"){ const dx=clickX-h.x; const dy=clickY-h.y; correct=Math.sqrt(dx*dx+dy*dy)<=h.radius;}
-  else if(h.type==="rect"){ correct=clickX>=Math.min(h.x1,h.x2)&&clickX<=Math.max(h.x1,h.x2)&&clickY>=Math.min(h.y1,h.y2)&&clickY<=Math.max(h.y1,h.y2);}
-  else if(h.type==="rotatedRect"){ correct=pointInPolygon(clickX,clickY,h.points);}
-  if(correct){ message.textContent="✅ Correct! You found the snake!"; message.style.color="#76ff03"; score++; rounds[currentRound].solved=true;
-    scoreBox.textContent=`Score: ${score} / ${rounds.length}`; drawHotspot(h); nextBtn.style.display="inline-block"; skipBtn.style.display="none";
-  } else{ message.textContent="❌ Nope, try again!"; message.style.color="#ff5252";}
-});
-
-skipBtn.addEventListener("click",function(){ drawHotspot(rounds[currentRound].hotspot); message.textContent="⚠️ Skipped! Here's the answer."; message.style.color="#ffa726"; rounds[currentRound].solved=true; nextBtn.style.display="inline-block"; skipBtn.style.display="none";});
-nextBtn.addEventListener("click",function(){ currentRound++; if(currentRound<rounds.length) loadRound(); else endGame(); });
-backBtn.addEventListener("click",function(){ if(currentRound>0){ if(rounds[currentRound].solved && score>0){ score--; rounds[currentRound].solved=false; scoreBox.textContent=`Score: ${score} / ${rounds.length}`;} currentRound--; loadRound(); }});
-
-function endGame(){
-  const endTime = Date.now();
-  const timeTaken = Math.floor((endTime-startTime)/1000);
-  formEmail.value = userEmail;
-  formScore.value = score;
-  formTime.value = timeTaken;
-  document.getElementById("finalMessage").textContent = `Your Score: ${score} / ${rounds.length} | Time: ${timeTaken}s`;
-  document.getElementById("gameOverScreen").style.display="flex";
-  document.getElementById("balloonCanvas").style.display="block";
-  createBalloons(40); animateBalloons();
-  confetti({particleCount:150,spread:90,origin:{y:0.7}});
-  document.getElementById("scoreForm").submit();
-}
-
-function restartGame(){
-  score=0; currentRound=0; scoreBox.textContent=`Score: 0 / ${rounds.length}`;
-  rounds.forEach(r=>r.solved=false);
-  document.getElementById("gameOverScreen").style.display="none";
-  document.getElementById("balloonCanvas").style.display="none";
-  startTime=Date.now();
-  loadRound();
-}
-
-function createBalloons(count){ balloons=[]; for(let i=0;i<count;i++){ balloons.push({x:Math.random()*balloonCanvas.width,y:balloonCanvas.height+Math.random()*200,r:15+Math.random()*20,color:`hsl(${Math.random()*360},100%,60%)`,speed:1+Math.random()*2});} }
-function animateBalloons(){ bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height); balloons.forEach(b=>{b.y-=b.speed;bctx.beginPath();bctx.arc(b.x,b.y,b.r,0,Math.PI*2);bctx.fillStyle=b.color;bctx.fill();}); requestAnimationFrame(animateBalloons);}
-function resizeBalloons(){ balloonCanvas.width=window.innerWidth; balloonCanvas.height=window.innerHeight;}
-window.addEventListener("resize",resizeBalloons); resizeBalloons();
+// Start the game
+askEmailAndStart();
 </script>
 </body>
 </html>
