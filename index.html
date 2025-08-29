@@ -18,8 +18,19 @@ body {
   text-align: center;
 }
 
-h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); }
-#score { background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; font-size: 1.2em; margin-bottom: 20px; }
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+}
+
+#score {
+  background: rgba(0,0,0,0.6);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
 
 .game-container {
   position: relative;
@@ -30,37 +41,145 @@ h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,
   box-shadow: 0 6px 15px rgba(0,0,0,0.6);
 }
 
-#gameImage { max-width: 90vw; max-height: 70vh; display: block; border-radius: 12px; }
-#overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
-#message { margin-top: 15px; font-size: 1.3em; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
+#gameImage {
+  max-width: 90vw;
+  max-height: 70vh;
+  display: block;
+  border-radius: 12px;
+}
 
-.controls { margin-top: 20px; }
-button { background: #4CAF50; color: white; border: none; padding: 12px 20px; margin: 5px; font-size: 1em; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+#message {
+  margin-top: 15px;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  margin: 5px;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
 button:hover { background: #45a049; }
-#backBtn { background: #ff5252; } #backBtn:hover { background: #e04646; }
-#skipBtn { background: #ff9800; } #skipBtn:hover { background: #e68a00; }
 
-#gameOverScreen { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:2000; }
-#gameOverCard { background:white; color:black; padding:30px; border-radius:20px; text-align:center; max-width:400px; box-shadow:0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.6s ease; }
-#gameOverCard h2 { font-size:2em; margin-bottom:10px; }
-#gameOverCard p { font-size:1.2em; margin-bottom:20px; }
-.gameOverBtns button { margin:8px; padding:12px 18px; border:none; border-radius:10px; font-size:1em; cursor:pointer; transition:0.3s; }
-.restartBtn { background:#4CAF50; color:white; } .restartBtn:hover { background:#3b8a3d; }
-.infoBtn { background:#2196F3; color:white; } .infoBtn:hover { background:#0b7dda; }
+#backBtn { background: #ff5252; }
+#backBtn:hover { background: #e04646; }
 
-@keyframes popIn { from { transform: scale(0.5); opacity:0; } to { transform: scale(1); opacity:1; } }
+#skipBtn { background: #ff9800; }
+#skipBtn:hover { background: #e68a00; }
 
-#balloonCanvas { position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:2100; display:none; }
+/* Game Over */
+#gameOverScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
 
-#emailScreen { position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; z-index:3000; }
-#emailInput { padding:12px; font-size:1em; border-radius:8px; border:none; width:250px; margin:10px; }
-#startBtn { padding:12px 20px; font-size:1em; border:none; border-radius:8px; background:#4CAF50; color:white; cursor:pointer; }
+#gameOverCard {
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+#gameOverCard h2 { font-size: 2em; margin-bottom: 10px; }
+#gameOverCard p { font-size: 1.2em; margin-bottom: 20px; }
+
+.gameOverBtns button {
+  margin: 8px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.restartBtn { background: #4CAF50; color: white; }
+.restartBtn:hover { background: #3b8a3d; }
+
+.infoBtn { background: #2196F3; color: white; }
+.infoBtn:hover { background: #0b7dda; }
+
+/* Balloon canvas */
+#balloonCanvas {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  pointer-events:none;
+  z-index:2100;
+  display:none;
+}
+
+/* Email screen */
+#emailScreen {
+  position: fixed;
+  top:0; left:0;
+  width:100vw;
+  height:100vh;
+  background: rgba(0,0,0,0.85);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  z-index:3000;
+}
+#emailInput {
+  padding: 12px;
+  font-size:1em;
+  border-radius:8px;
+  border:none;
+  width:250px;
+  margin:10px;
+}
+#startBtn {
+  padding:12px 20px;
+  font-size:1em;
+  border:none;
+  border-radius:8px;
+  background:#4CAF50;
+  color:white;
+  cursor:pointer;
+}
 #startBtn:hover { background:#3b8a3d; }
-#emailError { color:#ff5252; margin-top:10px; display:none; }
+#emailError {
+  color:#ff5252;
+  margin-top:10px;
+  display:none;
+}
 </style>
 </head>
 <body>
 
+<!-- Email -->
 <div id="emailScreen">
   <h2>🐍 Enter Your Corporate Email to Play</h2>
   <input type="email" id="emailInput" placeholder="name@usv.in">
@@ -68,6 +187,7 @@ button:hover { background: #45a049; }
   <p id="emailError">❌ Please enter a valid corporate email.</p>
 </div>
 
+<!-- Game -->
 <div id="gameScreen" style="display:none;">
   <h1>🐍 Find the Snake!</h1>
   <div id="score">Score: 0 / 10</div>
@@ -82,6 +202,7 @@ button:hover { background: #45a049; }
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
   <canvas id="balloonCanvas"></canvas>
+
   <div id="gameOverScreen">
     <div id="gameOverCard">
       <h2 id="finalTitle">Game Over</h2>
@@ -96,6 +217,7 @@ button:hover { background: #45a049; }
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
+// Elements
 const img = document.getElementById("gameImage");
 const message = document.getElementById("message");
 const nextBtn = document.getElementById("nextBtn");
@@ -107,33 +229,38 @@ const ctx = canvas.getContext("2d");
 const balloonCanvas = document.getElementById("balloonCanvas");
 const bctx = balloonCanvas.getContext("2d");
 
+// Email screen
 const emailScreen = document.getElementById("emailScreen");
 const gameScreen = document.getElementById("gameScreen");
 const emailInput = document.getElementById("emailInput");
 const startBtn = document.getElementById("startBtn");
 const emailError = document.getElementById("emailError");
-
 const ALLOWED_DOMAINS = ["@usv.in","@svgcentre.in"];
-let playerEmail = "", startTime = null;
-let currentRound = 0, score = 0;
+
+let playerEmail = "";
+let startTime = null;
+let dataSubmitted = false;
+let currentRound = 0;
+let score = 0;
+let balloons = [];
 
 // Snake rounds
 const rounds = [
-  { src:"snake2.jpg", hotspot:{type:"circle", x:695, y:337, radius:301}, solved:false },
-  { src:"snake6.jpg", hotspot:{type:"rect", x1:50, y1:155, x2:417, y2:232}, solved:false },
-  { src:"snake1.jpg", hotspot:{type:"rect", x1:506, y1:271, x2:971, y2:455}, solved:false },
-  { src:"snake3.jpg", hotspot:{type:"rect", x1:203, y1:24, x2:255, y2:395}, solved:false },
-  { src:"snake4.jpg", hotspot:{type:"rect", x1:243, y1:109, x2:294, y2:204}, solved:false },
-  { src:"snake5.jpg", hotspot:{type:"circle", x:261, y:171, radius:29}, solved:false },
-  { src:"snake7.jpeg", hotspot:{type:"circle", x:1048, y:2001, radius:214}, solved:false },
-  { src:"snake10.jpg", hotspot:{type:"rotatedRect", points:[{x:626,y:466},{x:637,y:509},{x:169,y:735},{x:121,y:666}]}, solved:false },
-  { src:"snake9.jpg", hotspot:{type:"circle", x:470, y:1147, radius:69}, solved:false },
-  { src:"snake8.jpg", hotspot:{type:"rect", x1:489, y1:454, x2:331, y2:377}, solved:false }
+  { src:"snake2.jpg", hotspot:{type:"circle",x:695,y:337,radius:301},solved:false },
+  { src:"snake6.jpg", hotspot:{type:"rect",x1:50,y1:155,x2:417,y2:232},solved:false },
+  { src:"snake1.jpg", hotspot:{type:"rect",x1:506,y1:271,x2:971,y2:455},solved:false },
+  { src:"snake3.jpg", hotspot:{type:"rect",x1:203,y1:24,x2:255,y2:395},solved:false },
+  { src:"snake4.jpg", hotspot:{type:"rect",x1:243,y1:109,x2:294,y2:204},solved:false },
+  { src:"snake5.jpg", hotspot:{type:"circle",x:261,y:171,radius:29},solved:false },
+  { src:"snake7.jpeg", hotspot:{type:"circle",x:1048,y:2001,radius:214},solved:false },
+  { src:"snake10.jpg", hotspot:{type:"rotatedRect",points:[{x:626,y:466},{x:637,y:509},{x:169,y:735},{x:121,y:666}]},solved:false },
+  { src:"snake9.jpg", hotspot:{type:"circle",x:470,y:1147,radius:69},solved:false },
+  { src:"snake8.jpg", hotspot:{type:"rect",x1:489,y1:454,x2:331,y2:377},solved:false }
 ];
 
 // ---------- LOGIN ----------
 startBtn.addEventListener("click",()=>{
-  const email = emailInput.value.trim().toLowerCase();
+  const email=emailInput.value.trim().toLowerCase();
   if(!ALLOWED_DOMAINS.some(d=>email.endsWith(d))){
     emailError.style.display="block"; return;
   }
@@ -145,7 +272,7 @@ startBtn.addEventListener("click",()=>{
   loadRound();
 });
 
-// ---------- GAME ----------
+// ---------- GAME LOGIC ----------
 function resizeCanvas(){
   canvas.width=img.clientWidth;
   canvas.height=img.clientHeight;
@@ -153,32 +280,38 @@ function resizeCanvas(){
 
 function drawHotspot(hotspot){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle="red"; ctx.lineWidth=3;
-  const scaleX = canvas.width/img.naturalWidth;
-  const scaleY = canvas.height/img.naturalHeight;
+  ctx.strokeStyle="red";
+  ctx.lineWidth=3;
+  const scaleX=img.clientWidth/img.naturalWidth;
+  const scaleY=img.clientHeight/img.naturalHeight;
 
   if(hotspot.type==="circle"){
     ctx.beginPath();
-    ctx.arc(hotspot.x*scaleX, hotspot.y*scaleY, hotspot.radius*((scaleX+scaleY)/2), 0, 2*Math.PI);
+    ctx.arc(hotspot.x*scaleX,hotspot.y*scaleY,hotspot.radius*Math.max(scaleX,scaleY),0,2*Math.PI);
     ctx.stroke();
   } else if(hotspot.type==="rect"){
-    const x = hotspot.x1*scaleX, y = hotspot.y1*scaleY;
-    const w = (hotspot.x2-hotspot.x1)*scaleX, h = (hotspot.y2-hotspot.y1)*scaleY;
+    const x=Math.min(hotspot.x1,hotspot.x2)*scaleX;
+    const y=Math.min(hotspot.y1,hotspot.y2)*scaleY;
+    const w=Math.abs(hotspot.x2-hotspot.x1)*scaleX;
+    const h=Math.abs(hotspot.y2-hotspot.y1)*scaleY;
     ctx.strokeRect(x,y,w,h);
   } else if(hotspot.type==="rotatedRect"){
     ctx.beginPath();
     hotspot.points.forEach((p,i)=>{
-      const px=p.x*scaleX, py=p.y*scaleY;
+      const px=p.x*scaleX;
+      const py=p.y*scaleY;
       if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
     });
-    ctx.closePath(); ctx.stroke();
+    ctx.closePath();
+    ctx.stroke();
   }
 }
 
 function pointInPolygon(px,py,points){
   let inside=false;
   for(let i=0,j=points.length-1;i<points.length;j=i++){
-    const xi=points[i].x, yi=points[i].y, xj=points[j].x, yj=points[j].y;
+    const xi=points[i].x, yi=points[i].y;
+    const xj=points[j].x, yj=points[j].y;
     const intersect=((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi);
     if(intersect) inside=!inside;
   }
@@ -192,66 +325,168 @@ function loadRound(){
   skipBtn.style.display="inline-block";
   backBtn.style.display=currentRound>0?"inline-block":"none";
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  img.onload=()=>{
-    resizeCanvas();
-    if(rounds[currentRound].solved) drawHotspot(rounds[currentRound].hotspot);
+  img.onload=()=>resizeCanvas();
+
+  if(rounds[currentRound].solved){
+    drawHotspot(rounds[currentRound].hotspot);
+    message.textContent="✅ Already solved!";
+    message.style.color="#76ff03";
+    nextBtn.style.display="inline-block";
+    skipBtn.style.display="none";
   }
 }
 
-// ---------- IMAGE CLICK ----------
-img.addEventListener("click",function(e){
+img.addEventListener("click",function(event){
   if(rounds[currentRound].solved) return;
   const rect=img.getBoundingClientRect();
-  const clickX=(e.clientX-rect.left)*(img.naturalWidth/img.clientWidth);
-  const clickY=(e.clientY-rect.top)*(img.naturalHeight/img.clientHeight);
+  const x=(event.clientX-rect.left)*(img.naturalWidth/img.clientWidth);
+  const y=(event.clientY-rect.top)*(img.naturalHeight/img.clientHeight);
   const hotspot=rounds[currentRound].hotspot;
   let correct=false;
 
   if(hotspot.type==="circle"){
-    const dx=clickX-hotspot.x, dy=clickY-hotspot.y;
+    const dx=x-hotspot.x, dy=y-hotspot.y;
     correct=Math.sqrt(dx*dx+dy*dy)<=hotspot.radius;
   } else if(hotspot.type==="rect"){
-    correct=clickX>=Math.min(hotspot.x1,hotspot.x2)&&clickX<=Math.max(hotspot.x1,hotspot.x2)&&clickY>=Math.min(hotspot.y1,hotspot.y2)&&clickY<=Math.max(hotspot.y1,hotspot.y2);
+    correct=x>=Math.min(hotspot.x1,hotspot.x2)&&x<=Math.max(hotspot.x1,hotspot.x2)
+           &&y>=Math.min(hotspot.y1,hotspot.y2)&&y<=Math.max(hotspot.y1,hotspot.y2);
   } else if(hotspot.type==="rotatedRect"){
-    correct=pointInPolygon(clickX,clickY,hotspot.points);
+    correct=pointInPolygon(x,y,hotspot.points);
   }
 
   if(correct){
-    message.textContent="✅ Correct! You found the snake!"; message.style.color="#76ff03";
-    score++; rounds[currentRound].solved=true; scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
-    drawHotspot(hotspot); nextBtn.style.display="inline-block"; skipBtn.style.display="none";
-  } else { message.textContent="❌ Nope, try again!"; message.style.color="#ff5252"; }
+    message.textContent="✅ Correct! You found the snake!";
+    message.style.color="#76ff03";
+    rounds[currentRound].solved=true;
+    score++;
+    scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
+    drawHotspot(hotspot);
+    nextBtn.style.display="inline-block";
+    skipBtn.style.display="none";
+  } else {
+    message.textContent="❌ Nope, try again!";
+    message.style.color="#ff5252";
+  }
 });
 
-// ---------- SKIP & NEXT ----------
 skipBtn.addEventListener("click",function(){
   drawHotspot(rounds[currentRound].hotspot);
-  message.textContent="⚠️ Skipped! Here's the answer."; message.style.color="#ffa726";
-  rounds[currentRound].solved=true; nextBtn.style.display="inline-block"; skipBtn.style.display="none";
+  message.textContent="⚠️ Skipped! Here's the answer.";
+  message.style.color="#ffa726";
+  rounds[currentRound].solved=true;
+  nextBtn.style.display="inline-block";
+  skipBtn.style.display="none";
 });
 
 nextBtn.addEventListener("click",function(){
-  currentRound++; if(currentRound<rounds.length) loadRound(); else endGame();
+  currentRound++;
+  if(currentRound<rounds.length) loadRound();
+  else endGame();
 });
 
 backBtn.addEventListener("click",function(){
   if(currentRound>0){
-    if(rounds[currentRound].solved && score>0){ score--; rounds[currentRound].solved=false; scoreBox.textContent=`Score: ${score} / ${rounds.length}`; }
-    currentRound--; loadRound();
+    if(rounds[currentRound].solved&&score>0){
+      score--;
+      rounds[currentRound].solved=false;
+      scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
+    }
+    currentRound--;
+    loadRound();
   }
 });
 
 // ---------- GAME OVER ----------
 function endGame(){
-  img.style.display="none"; canvas.style.display="none"; nextBtn.style.display="none"; backBtn.style.display="none"; skipBtn.style.display="none";
+  img.style.display="none";
+  canvas.style.display="none";
+  nextBtn.style.display="none";
+  backBtn.style.display="none";
+  skipBtn.style.display="none";
+
   let finalMessage="";
   if(score===10) finalMessage="🐍 Snake Master! Incredible eyesight!";
   else if(score>=8) finalMessage="🦎 Great Job! You’re a Snake Spotter!";
   else if(score>=5) finalMessage="👀 Good Try! Keep practicing your spotting skills!";
   else finalMessage="🌱 Don’t worry! Next time you’ll catch them all!";
+
   document.getElementById("finalTitle").textContent="🎮 Game Over!";
   document.getElementById("finalMessage").textContent=`Score: ${score}/10 - ${finalMessage}`;
   document.getElementById("gameOverScreen").style.display="flex";
+
+  // Celebrate
+  if(score===rounds.length) celebrate();
+
+  // Submit data
+  if(!dataSubmitted){
+    dataSubmitted=true;
+    const endTime=new Date();
+    const timeTaken=Math.floor((endTime-startTime)/1000);
+    const url="https://script.google.com/macros/s/AKfycbxKfEnCgKuX7_5H4k4Wh5Nzp4Xf5-_Wy6i8w9r8tf6Ur6ZLFIoOD9sm2YbxxOvhnl0/exec";
+    fetch(`${url}?email=${encodeURIComponent(playerEmail)}&score=${score}&timeTaken=${timeTaken}`)
+      .then(res=>res.text()).then(console.log).catch(console.error);
+  }
+}
+
+// ---------- CELEBRATION ----------
+function celebrate(){
+  balloonCanvas.style.display="block";
+  balloonCanvas.width=window.innerWidth;
+  balloonCanvas.height=window.innerHeight;
+  balloons=[];
+  for(let i=0;i<30;i++){
+    balloons.push({
+      x:Math.random()*balloonCanvas.width,
+      y:balloonCanvas.height+Math.random()*500,
+      r:20+Math.random()*30,
+      c:`hsl(${Math.random()*360},70%,60%)`,
+      s:1+Math.random()*2
+    });
+  }
+  let balloonAnimation=true;
+  function updateBalloons(){
+    if(!balloonAnimation) return;
+    bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
+    for(let b of balloons){
+      b.y-=b.s;
+      bctx.beginPath();
+      bctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      bctx.fillStyle=b.c;
+      bctx.fill();
+    }
+    requestAnimationFrame(updateBalloons);
+  }
+  updateBalloons();
+
+  // Confetti only for perfect score
+  const duration=5000;
+  const end=Date.now()+duration;
+  if(score===rounds.length){
+    (function frame(){
+      confetti({particleCount:5,angle:60,spread:55,origin:{x:0}});
+      confetti({particleCount:5,angle:120,spread:55,origin:{x:1}});
+      if(Date.now()<end) requestAnimationFrame(frame);
+    })();
+  }
+
+  // Stop balloons after 5 sec
+  setTimeout(()=>{
+    balloonAnimation=false;
+    balloonCanvas.style.display="none";
+    bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height);
+  },5000);
+}
+
+// ---------- RESTART ----------
+function restartGame(){
+  score=0;
+  currentRound=0;
+  rounds.forEach(r=>r.solved=false);
+  scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
+  img.style.display="block";
+  canvas.style.display="block";
+  document.getElementById("gameOverScreen").style.display="none";
+  loadRound();
 }
 </script>
 </body>
