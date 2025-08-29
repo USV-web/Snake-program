@@ -17,39 +17,9 @@ body {
   color: white;
   text-align: center;
 }
-
-/* Email overlay */
-#emailOverlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 3000;
-  color: white;
-}
-#emailOverlay input[type="email"] {
-  padding: 12px;
-  font-size: 1.2em;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 12px;
-  width: 300px;
-}
-#emailOverlay button {
-  padding: 12px 20px;
-  font-size: 1em;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #4CAF50;
-  color: white;
-}
-
-/* Game styling */
+#emailOverlay {position: fixed;top: 0;left: 0;width: 100vw;height: 100vh;background: rgba(0,0,0,0.85);display: flex;flex-direction: column;justify-content: center;align-items: center;z-index: 3000;color: white;}
+#emailOverlay input[type="email"] {padding: 12px;font-size: 1.2em;border-radius: 8px;border: none;margin-bottom: 12px;width: 300px;}
+#emailOverlay button {padding: 12px 20px;font-size: 1em;border-radius: 8px;border: none;cursor: pointer;background: #4CAF50;color: white;}
 h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7);}
 #score { background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; font-size: 1.2em; margin-bottom: 20px;}
 .game-container { position: relative; display: inline-block; border: 3px solid #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.6);}
@@ -61,23 +31,14 @@ button { background: #4CAF50; color: white; border: none; padding: 12px 20px; ma
 button:hover { background: #45a049;}
 #backBtn { background: #ff5252;} #backBtn:hover { background: #e04646;}
 #skipBtn { background: #ff9800;} #skipBtn:hover { background: #e68a00;}
-
-/* Game Over Popup */
 #gameOverScreen { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.4); display:none; justify-content:center; align-items:center; z-index:2000;}
 #gameOverCard { background:white; color:black; padding:30px; border-radius:20px; text-align:center; max-width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.6s ease;}
-#gameOverCard h2 { font-size: 2em; margin-bottom: 10px;} #gameOverCard p { font-size:1.2em; margin-bottom:20px;}
-.gameOverBtns button { margin:8px; padding:12px 18px; border:none; border-radius:10px; font-size:1em; cursor:pointer; transition:0.3s;}
-.restartBtn { background:#4CAF50; color:white;} .restartBtn:hover { background:#3b8a3d;}
-.infoBtn { background:#2196F3; color:white;} .infoBtn:hover { background:#0b7dda;}
-@keyframes popIn { from { transform: scale(0.5); opacity:0;} to { transform: scale(1); opacity:1;}}
-
-/* Balloon canvas */
 #balloonCanvas { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:2100; display:none;}
+@keyframes popIn { from { transform: scale(0.5); opacity:0;} to { transform: scale(1); opacity:1;}}
 </style>
 </head>
 <body>
 
-<!-- Email Overlay -->
 <div id="emailOverlay">
   <h2>Enter your corporate email ID</h2>
   <input type="email" id="userEmail" placeholder="Enter your email" />
@@ -94,7 +55,6 @@ button:hover { background: #45a049;}
 </div>
 
 <div id="message"></div>
-
 <div class="controls">
   <button id="backBtn" style="display:none;">⬅ Back</button>
   <button id="skipBtn" style="display:none;">Skip / Show Answer</button>
@@ -103,12 +63,10 @@ button:hover { background: #45a049;}
 
 <canvas id="balloonCanvas"></canvas>
 
-<!-- Game Over Popup -->
 <div id="gameOverScreen">
   <div id="gameOverCard">
     <h2 id="finalTitle">Game Over</h2>
     <p id="finalMessage">Your Score: 0/10</p>
-    <!-- Hidden form to submit score to Google Sheet -->
     <form id="scoreForm" action="https://script.google.com/macros/s/AKfycbzbTKl3kQr_48fJuKuhPrHiovW2gW-zBupuu_LFL3dHZh62I1LeSKxHdXjWYqCRc1o/exec" method="POST" target="hidden_iframe">
       <input type="hidden" name="email" id="formEmail">
       <input type="hidden" name="score" id="formScore">
@@ -156,13 +114,12 @@ const rounds = [
   { src: "snake7.jpeg", hotspot: { type: "circle", x: 1048, y: 2001, radius: 214 }, solved: false },
   { src: "snake10.jpg", hotspot: { type: "rotatedRect", points: [ {x:626,y:466},{x:637,y:509},{x:169,y:735},{x:121,y:666} ] }, solved: false },
   { src: "snake9.jpg", hotspot: { type: "circle", x: 470, y: 1147, radius: 69 }, solved: false },
-  { src: "snake8.jpg", hotspot: { type: "rect", x1: 489, y1: 454, x2: 331, y2: 377 }, solved: false }
+  { src: "snake8.jpg", hotspot: { type: "rect", x1: 331, y1: 377, x2: 489, y2: 454 }, solved: false }  // fixed order
 ];
 
 let currentRound = 0;
 let score = 0;
 
-// ------------------------- Email Submission -------------------------
 function submitEmail() {
   const email = emailInput.value.trim().toLowerCase();
   if(!email.endsWith("@usv.in") && !email.endsWith("@svgcentre.in")){
@@ -175,7 +132,6 @@ function submitEmail() {
   loadRound();
 }
 
-// ------------------------- Canvas & Hotspot -------------------------
 function resizeCanvas() { canvas.width=img.clientWidth; canvas.height=img.clientHeight; }
 function drawHotspot(h) {
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -186,9 +142,9 @@ function drawHotspot(h) {
   else if(h.type==="rect"){ const x1=Math.min(h.x1,h.x2)*scaleX; const y1=Math.min(h.y1,h.y2)*scaleY; ctx.strokeRect(x1,y1,Math.abs(h.x2-h.x1)*scaleX,Math.abs(h.y2-h.y1)*scaleY);}
   else if(h.type==="rotatedRect"){ ctx.beginPath(); h.points.forEach((p,i)=>{ const px=p.x*scaleX; const py=p.y*scaleY; if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }); ctx.closePath(); ctx.stroke();}
 }
-function pointInPolygon(px,py,points){ let inside=false; for(let i=0,j=points.length-1;i<points.length;j=i++){ const xi=points[i].x,yi=points[i].y; const xj=points[j].x,yj=points[j].y; const intersect=((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi)); if(intersect) inside=!inside;} return inside;}
 
-// ------------------------- Game Logic -------------------------
+function pointInPolygon(px,py,points){ let inside=false; for(let i=0,j=points.length-1;i<points.length;j=i++){ const xi=points[i].x,yi=points[i].y; const xj=points[j].x,yj=points[j].y; const intersect=((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi); if(intersect) inside=!inside;} return inside;}
+
 function loadRound(){
   img.src=rounds[currentRound].src;
   message.textContent=""; nextBtn.style.display="none"; skipBtn.style.display="inline-block";
@@ -217,13 +173,6 @@ skipBtn.addEventListener("click",function(){ drawHotspot(rounds[currentRound].ho
 nextBtn.addEventListener("click",function(){ currentRound++; if(currentRound<rounds.length) loadRound(); else endGame(); });
 backBtn.addEventListener("click",function(){ if(currentRound>0){ if(rounds[currentRound].solved && score>0){ score--; rounds[currentRound].solved=false; scoreBox.textContent=`Score: ${score} / ${rounds.length}`;} currentRound--; loadRound(); }});
 
-// ------------------------- Balloons -------------------------
-function createBalloons(count){ balloons=[]; for(let i=0;i<count;i++){ balloons.push({x:Math.random()*balloonCanvas.width,y:balloonCanvas.height+Math.random()*200,r:15+Math.random()*20,color:`hsl(${Math.random()*360},100%,60%)`,speed:1+Math.random()*2});} }
-function animateBalloons(){ bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height); balloons.forEach(b=>{b.y-=b.speed;bctx.beginPath();bctx.arc(b.x,b.y,b.r,0,Math.PI*2);bctx.fillStyle=b.color;bctx.fill();}); requestAnimationFrame(animateBalloons);}
-function resizeBalloons(){ balloonCanvas.width=window.innerWidth; balloonCanvas.height=window.innerHeight;}
-window.addEventListener("resize",resizeBalloons); resizeBalloons();
-
-// ------------------------- End & Restart -------------------------
 function endGame(){
   const endTime = Date.now();
   const timeTaken = Math.floor((endTime-startTime)/1000);
@@ -246,6 +195,11 @@ function restartGame(){
   startTime=Date.now();
   loadRound();
 }
+
+function createBalloons(count){ balloons=[]; for(let i=0;i<count;i++){ balloons.push({x:Math.random()*balloonCanvas.width,y:balloonCanvas.height+Math.random()*200,r:15+Math.random()*20,color:`hsl(${Math.random()*360},100%,60%)`,speed:1+Math.random()*2});} }
+function animateBalloons(){ bctx.clearRect(0,0,balloonCanvas.width,balloonCanvas.height); balloons.forEach(b=>{b.y-=b.speed;bctx.beginPath();bctx.arc(b.x,b.y,b.r,0,Math.PI*2);bctx.fillStyle=b.color;bctx.fill();}); requestAnimationFrame(animateBalloons);}
+function resizeBalloons(){ balloonCanvas.width=window.innerWidth; balloonCanvas.height=window.innerHeight;}
+window.addEventListener("resize",resizeBalloons); resizeBalloons();
 </script>
 </body>
 </html>
