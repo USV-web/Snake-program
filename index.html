@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,38 +41,19 @@ h1 {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 6px 15px rgba(0,0,0,0.6);
-  width: 90vw;
-  max-width: 1000px;
-  height: 70vh;
 }
-
-#draggableWrapper {
-  display: inline-block;
-  cursor: grab;
-  touch-action: none;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-origin: top left;
-}
-
-#draggableWrapper.dragging { cursor: grabbing; }
 
 #gameImage {
+  max-width: 90vw;
+  max-height: 70vh;
   display: block;
   border-radius: 12px;
-  width: 100%;
-  height: 100%;
-  user-select: none;
-  pointer-events: all;
 }
 
 #overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   pointer-events: none;
 }
 
@@ -81,7 +64,9 @@ h1 {
   text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
 }
 
-.controls { margin-top: 20px; }
+.controls {
+  margin-top: 20px;
+}
 
 button {
   background: #4CAF50;
@@ -125,14 +110,29 @@ button:hover { background: #45a049; }
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.gameOverBtns button { margin: 8px; padding: 12px 18px; border-radius: 10px; cursor: pointer; }
-.restartBtn { background: #4CAF50; color:white; }
+#gameOverCard h2 { font-size: 2em; margin-bottom: 10px; }
+#gameOverCard p { font-size: 1.2em; margin-bottom: 20px; }
+
+.gameOverBtns button {
+  margin: 8px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.restartBtn { background: #4CAF50; color: white; }
 .restartBtn:hover { background: #3b8a3d; }
+
+.infoBtn { background: #2196F3; color: white; }
+.infoBtn:hover { background: #0b7dda; }
 
 /* Balloon canvas */
 #balloonCanvas {
   position: fixed;
-  top:0; left:0;
+  top:0;
+  left:0;
   width:100vw;
   height:100vh;
   pointer-events:none;
@@ -183,8 +183,8 @@ button:hover { background: #45a049; }
 
 <!-- Email -->
 <div id="emailScreen">
-  <h2>Enter Your Email to Play</h2>
-  <input type="email" id="emailInput" placeholder="Eg. name@usv.in">
+  <h2>🐍 Enter Your Corporate Email to Play</h2>
+  <input type="email" id="emailInput" placeholder="name@usv.in">
   <button id="startBtn">Start Game</button>
   <p id="emailError">❌ Please enter a valid corporate email.</p>
 </div>
@@ -193,21 +193,16 @@ button:hover { background: #45a049; }
 <div id="gameScreen" style="display:none;">
   <h1>🐍 Find the Snake!</h1>
   <div id="score">Score: 0 / 10</div>
-
   <div class="game-container">
-    <div id="draggableWrapper">
-      <img id="gameImage" src="" alt="Snake Game">
-      <canvas id="overlay"></canvas>
-    </div>
+    <img id="gameImage" src="" alt="Snake Game">
+    <canvas id="overlay"></canvas>
   </div>
-
   <div id="message"></div>
   <div class="controls">
     <button id="backBtn" style="display:none;">⬅ Back</button>
     <button id="skipBtn" style="display:none;">Skip / Show Answer</button>
     <button id="nextBtn" style="display:none;">Next ➡</button>
   </div>
-
   <canvas id="balloonCanvas"></canvas>
 
   <div id="gameOverScreen">
@@ -216,6 +211,7 @@ button:hover { background: #45a049; }
       <p id="finalMessage">Your Score: 0/10</p>
       <div class="gameOverBtns">
         <button class="restartBtn" onclick="restartGame()">🔄 Play Again</button>
+        
       </div>
     </div>
   </div>
@@ -225,7 +221,6 @@ button:hover { background: #45a049; }
 <script>
 // Elements
 const img = document.getElementById("gameImage");
-const wrapper = document.getElementById("draggableWrapper");
 const message = document.getElementById("message");
 const nextBtn = document.getElementById("nextBtn");
 const backBtn = document.getElementById("backBtn");
@@ -251,13 +246,6 @@ let currentRound = 0;
 let score = 0;
 let balloons = [];
 
-// Zoom + pan
-let zoom = 1;
-const ZOOM_STEP = 0.1;
-let offset = {x:0, y:0};
-let dragStart = {x:0, y:0};
-let isDragging = false;
-
 // Snake rounds
 const rounds = [
   { src:"snake2.jpg", hotspot:{type:"circle",x:695,y:337,radius:301},solved:false },
@@ -273,31 +261,31 @@ const rounds = [
 ];
 
 // ---------- LOGIN ----------
-startBtn.addEventListener("click", ()=>{
-    const email = emailInput.value.trim().toLowerCase();
-    if(!ALLOWED_DOMAINS.some(d => email.endsWith(d))){
-        emailError.style.display = "block"; return;
-    }
-    emailError.style.display = "none";
-    playerEmail = email;
-    startTime = new Date();
-    emailScreen.style.display = "none";
-    gameScreen.style.display = "block";
-    loadRound();
+startBtn.addEventListener("click",()=>{
+  const email=emailInput.value.trim().toLowerCase();
+  if(!ALLOWED_DOMAINS.some(d=>email.endsWith(d))){
+    emailError.style.display="block"; return;
+  }
+  emailError.style.display="none";
+  playerEmail=email;
+  startTime=new Date();
+  emailScreen.style.display="none";
+  gameScreen.style.display="block";
+  loadRound();
 });
 
 // ---------- GAME LOGIC ----------
 function resizeCanvas(){
-  canvas.width = img.clientWidth;
-  canvas.height = img.clientHeight;
+  canvas.width=img.clientWidth;
+  canvas.height=img.clientHeight;
 }
 
 function drawHotspot(hotspot){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="red";
   ctx.lineWidth=3;
-  const scaleX = (img.clientWidth / img.naturalWidth) * zoom;
-  const scaleY = (img.clientHeight / img.naturalHeight) * zoom;
+  const scaleX=img.clientWidth/img.naturalWidth;
+  const scaleY=img.clientHeight/img.naturalHeight;
 
   if(hotspot.type==="circle"){
     ctx.beginPath();
@@ -321,7 +309,6 @@ function drawHotspot(hotspot){
   }
 }
 
-// Point in polygon
 function pointInPolygon(px,py,points){
   let inside=false;
   for(let i=0,j=points.length-1;i<points.length;j=i++){
@@ -333,81 +320,78 @@ function pointInPolygon(px,py,points){
   return inside;
 }
 
-// Load round
 function loadRound(){
-  img.src = rounds[currentRound].src;
-  message.textContent = "";
-  nextBtn.style.display = "none";
-  skipBtn.style.display = "inline-block";
-  backBtn.style.display = currentRound>0 ? "inline-block" : "none";
+  img.src=rounds[currentRound].src;
+  message.textContent="";
+  nextBtn.style.display="none";
+  skipBtn.style.display="inline-block";
+  backBtn.style.display=currentRound>0?"inline-block":"none";
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  img.onload = () => resizeCanvas();
+  img.onload=()=>resizeCanvas();
 
   if(rounds[currentRound].solved){
     drawHotspot(rounds[currentRound].hotspot);
-    message.textContent = "✅ Already solved!";
-    message.style.color = "#76ff03";
-    nextBtn.style.display = "inline-block";
-    skipBtn.style.display = "none";
+    message.textContent="✅ Already solved!";
+    message.style.color="#76ff03";
+    nextBtn.style.display="inline-block";
+    skipBtn.style.display="none";
   }
 }
 
-// Image click
-img.addEventListener("click", function(event){
+img.addEventListener("click",function(event){
   if(rounds[currentRound].solved) return;
-  const rect = img.getBoundingClientRect();
-  const x = (event.clientX - rect.left) * (img.naturalWidth / img.clientWidth);
-  const y = (event.clientY - rect.top) * (img.naturalHeight / img.clientHeight);
-  const hotspot = rounds[currentRound].hotspot;
-  let correct = false;
+  const rect=img.getBoundingClientRect();
+  const x=(event.clientX-rect.left)*(img.naturalWidth/img.clientWidth);
+  const y=(event.clientY-rect.top)*(img.naturalHeight/img.clientHeight);
+  const hotspot=rounds[currentRound].hotspot;
+  let correct=false;
 
   if(hotspot.type==="circle"){
     const dx=x-hotspot.x, dy=y-hotspot.y;
-    correct = Math.sqrt(dx*dx+dy*dy) <= hotspot.radius;
+    correct=Math.sqrt(dx*dx+dy*dy)<=hotspot.radius;
   } else if(hotspot.type==="rect"){
-    correct = x>=Math.min(hotspot.x1,hotspot.x2)&&x<=Math.max(hotspot.x1,hotspot.x2)
-           && y>=Math.min(hotspot.y1,hotspot.y2)&&y<=Math.max(hotspot.y1,hotspot.y2);
+    correct=x>=Math.min(hotspot.x1,hotspot.x2)&&x<=Math.max(hotspot.x1,hotspot.x2)
+           &&y>=Math.min(hotspot.y1,hotspot.y2)&&y<=Math.max(hotspot.y1,hotspot.y2);
   } else if(hotspot.type==="rotatedRect"){
-    correct = pointInPolygon(x,y,hotspot.points);
+    correct=pointInPolygon(x,y,hotspot.points);
   }
 
   if(correct){
-    message.textContent = "✅ Correct! You found the snake!";
-    message.style.color = "#76ff03";
-    rounds[currentRound].solved = true;
+    message.textContent="✅ Correct! You found the snake!";
+    message.style.color="#76ff03";
+    rounds[currentRound].solved=true;
     score++;
-    scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+    scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
     drawHotspot(hotspot);
-    nextBtn.style.display = "inline-block";
-    skipBtn.style.display = "none";
+    nextBtn.style.display="inline-block";
+    skipBtn.style.display="none";
   } else {
-    message.textContent = "❌ Nope, try again!";
-    message.style.color = "#ff5252";
+    message.textContent="❌ Nope, try again!";
+    message.style.color="#ff5252";
   }
 });
 
-// Skip / Next / Back
-skipBtn.addEventListener("click", ()=>{
+skipBtn.addEventListener("click",function(){
   drawHotspot(rounds[currentRound].hotspot);
-  message.textContent = "⚠️ Skipped! Here's the answer.";
-  message.style.color = "#ffa726";
-  rounds[currentRound].solved = true;
-  nextBtn.style.display = "inline-block";
-  skipBtn.style.display = "none";
+  message.textContent="⚠️ Skipped! Here's the answer.";
+  message.style.color="#ffa726";
+  rounds[currentRound].solved=true;
+  nextBtn.style.display="inline-block";
+  skipBtn.style.display="none";
 });
 
-nextBtn.addEventListener("click", ()=>{
+nextBtn.addEventListener("click",function(){
   currentRound++;
   if(currentRound<rounds.length) loadRound();
   else endGame();
 });
 
-backBtn.addEventListener("click", ()=>{
+backBtn.addEventListener("click",function(){
   if(currentRound>0){
-    if(rounds[currentRound].solved && score>0){
+    if(rounds[currentRound].solved&&score>0){
       score--;
       rounds[currentRound].solved=false;
-      scoreBox.textContent = `Score: ${score} / ${rounds.length}`;
+      scoreBox.textContent=`Score: ${score} / ${rounds.length}`;
     }
     currentRound--;
     loadRound();
@@ -422,23 +406,25 @@ function endGame(){
   backBtn.style.display="none";
   skipBtn.style.display="none";
 
-  let finalMessage = "";
+  let finalMessage="";
   if(score===10) finalMessage="🐍 Snake Master! Incredible eyesight!";
   else if(score>=8) finalMessage="🦎 Great Job! You’re a Snake Spotter!";
   else if(score>=5) finalMessage="👀 Good Try! Keep practicing your spotting skills!";
   else finalMessage="🌱 Don’t worry! Next time you’ll catch them all!";
 
-  document.getElementById("finalTitle").textContent = "🎮 Game Over!";
-  document.getElementById("finalMessage").textContent = `Score: ${score}/10 - ${finalMessage}`;
+  document.getElementById("finalTitle").textContent="🎮 Game Over!";
+  document.getElementById("finalMessage").textContent=`Score: ${score}/10 - ${finalMessage}`;
   document.getElementById("gameOverScreen").style.display="flex";
 
+  // Celebrate
   if(score===rounds.length) celebrate();
 
+  // Submit data
   if(!dataSubmitted){
     dataSubmitted=true;
     const endTime=new Date();
     const timeTaken=Math.floor((endTime-startTime)/1000);
-    const url="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+    const url="https://script.google.com/macros/s/AKfycbxKfEnCgKuX7_5H4k4Wh5Nzp4Xf5-_Wy6i8w9r8tf6Ur6ZLFIoOD9sm2YbxxOvhnl0/exec";
     fetch(`${url}?email=${encodeURIComponent(playerEmail)}&score=${score}&timeTaken=${timeTaken}`)
       .then(res=>res.text()).then(console.log).catch(console.error);
   }
@@ -474,14 +460,18 @@ function celebrate(){
   }
   updateBalloons();
 
+  // Confetti only for perfect score
   const duration=5000;
   const end=Date.now()+duration;
-  (function frame(){
+  if(score===rounds.length){
+    (function frame(){
       confetti({particleCount:5,angle:60,spread:55,origin:{x:0}});
       confetti({particleCount:5,angle:120,spread:55,origin:{x:1}});
       if(Date.now()<end) requestAnimationFrame(frame);
-  })();
+    })();
+  }
 
+  // Stop balloons after 5 sec
   setTimeout(()=>{
     balloonAnimation=false;
     balloonCanvas.style.display="none";
@@ -498,69 +488,9 @@ function restartGame(){
   img.style.display="block";
   canvas.style.display="block";
   document.getElementById("gameOverScreen").style.display="none";
-  zoom = 1;
-  offset = {x:0, y:0};
-  applyZoom();
   loadRound();
 }
-
-// ---------- ZOOM & PAN ----------
-function applyZoom(){
-  const container = document.querySelector('.game-container');
-  const maxX = 0;
-  const maxY = 0;
-  const minX = container.clientWidth - img.clientWidth*zoom;
-  const minY = container.clientHeight - img.clientHeight*zoom;
-
-  offset.x = Math.min(maxX, Math.max(minX, offset.x));
-  offset.y = Math.min(maxY, Math.max(minY, offset.y));
-
-  wrapper.style.transform = `translate(${offset.x}px,${offset.y}px) scale(${zoom})`;
-  drawHotspot(rounds[currentRound].hotspot);
-}
-
-// Zoom buttons only
-document.getElementById("zoomInBtn")?.addEventListener("click",()=>{
-  zoom += ZOOM_STEP;
-  applyZoom();
-});
-document.getElementById("zoomOutBtn")?.addEventListener("click",()=>{
-  zoom = Math.max(0.5, zoom-ZOOM_STEP);
-  applyZoom();
-});
-
-// Drag / Pan with boundaries
-wrapper.addEventListener("mousedown",e=>{
-  isDragging=true;
-  dragStart={x:e.clientX-offset.x, y:e.clientY-offset.y};
-  wrapper.classList.add("dragging");
-});
-window.addEventListener("mousemove",e=>{
-  if(!isDragging) return;
-  offset.x = e.clientX-dragStart.x;
-  offset.y = e.clientY-dragStart.y;
-  applyZoom();
-});
-window.addEventListener("mouseup",()=>{
-  isDragging=false;
-  wrapper.classList.remove("dragging");
-});
-
-// Touch events
-wrapper.addEventListener("touchstart",e=>{
-  isDragging=true;
-  const t=e.touches[0];
-  dragStart={x:t.clientX-offset.x, y:t.clientY-offset.y};
-});
-window.addEventListener("touchmove",e=>{
-  if(!isDragging) return;
-  const t=e.touches[0];
-  offset.x = t.clientX-dragStart.x;
-  offset.y = t.clientY-dragStart.y;
-  applyZoom();
-});
-window.addEventListener("touchend",()=>{isDragging=false;});
-
 </script>
 </body>
 </html>
+
